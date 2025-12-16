@@ -6,13 +6,16 @@ export default function SearchFiltersMobile() {
       <label htmlFor="filtersModal">
         <SlidersHorizontal
           size={40}
-          className="bg-primary rounded p-2 h-full aspect-square"
+          className="bg-primary rounded p-2 h-full aspect-square text-primary-content"
         />
       </label>
 
       <input type="checkbox" id="filtersModal" className="modal-toggle" />
       <div className="modal modal-bottom" role="dialog">
         <div className="modal-box h-[70dvh] relative px-0 pt-13">
+          {/** TODO: Conseguir los filtros usando la api para ponerlos aquí
+           * Actualmente usando placeholders
+           */}
           <div className="flex flex-col ">
             <details className="collapse collapse-arrow" name="filters-1" open>
               <summary className="collapse-title font-semibold">
@@ -35,9 +38,7 @@ export default function SearchFiltersMobile() {
             <div className="divider"></div>
 
             <details className="collapse collapse-arrow" name="filters-2">
-              <summary className="collapse-title font-semibold">
-                Etapa
-              </summary>
+              <summary className="collapse-title font-semibold">Etapa</summary>
               <div className="collapse-content text-sm">
                 <fieldset className="fieldset ">
                   <label className="label">
@@ -51,7 +52,6 @@ export default function SearchFiltersMobile() {
                 </fieldset>
               </div>
             </details>
-
           </div>
 
           <div className="modal-action absolute top-3 right-3 m-0">

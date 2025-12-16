@@ -1,12 +1,12 @@
 import Link from "next/link";
 import {
   Search,
-  Notebook,
   Pencil,
   Plus,
   CircleUserRound,
   Bell,
 } from "lucide-react";
+import { modifyData } from "../../../const";
 
 export default function NavBar() {
   return (
@@ -45,50 +45,22 @@ export default function NavBar() {
             <li>
               <div className="flex flex-row items-center justify-start">
                 <Search size={20} />
-                <Link href={"#"}>Buscar</Link>
+                <Link href={"/protected/search"}>Buscar</Link>
               </div>
             </li>
             <li>
               <div className="flex flex-row items-center justify-start">
                 <Pencil size={20} />
-                <Link href={"#"}>Modificar</Link>
+                <Link href={"/protected/modify"}>Modificar</Link>
               </div>
               <ul className="p-2">
-                <li>
-                  <Link href={"#"}>Analistas de Entidades</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Centros de Negocios</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Constructores</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Entidades</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Fiscales</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Grupos</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Promotores Ipsum</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Bonos</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Subtipo de Bonos</Link>
-                </li>
+                {modifyData.map((item, index) => (
+                  <li key={index}>
+                    <Link href={`/protected/modify?type=${item.slug}`} replace={true} shallow={true}>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </li>
             <li>
@@ -109,50 +81,19 @@ export default function NavBar() {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
           <li>
-            <Link href={"#"}>Buscar</Link>
-          </li>
-          <li>
-            <Link href={"#"}>Todos los Proyectos</Link>
+            <Link href={"/protected/search"}>Buscar</Link>
           </li>
           <li>
             <details>
               <summary>Modificar</summary>
               <ul className="p-2 bg-base-300 w-40 z-1">
-                <li>
-                  <Link href={"#"}>Analistas de Entidades</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Centros de Negocios</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Constructores</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Entidades</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Fiscales</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Grupos</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Promotores Ipsum</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Bonos</Link>
-                </li>
-
-                <li>
-                  <Link href={"#"}>Subtipo de Bonos</Link>
-                </li>
+                {modifyData.map((item, index) => (
+                  <li key={index}>
+                    <Link prefetch={false} href={`/protected/modify?type=${item.slug}` }>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </details>
           </li>
@@ -165,9 +106,9 @@ export default function NavBar() {
       </div>
 
       {/** Botón a la derecha */}
-      <div className="navbar-end flex gap-5">
+      <div className="navbar-end flex gap-5 w-full">
         <Bell size={30} className="text-primary" />
-        <Link href={"#"} className="btn btn-primary">
+        <Link href={"/protected/new"} className="btn btn-primary">
           <Plus size={20} />
           <p>Nuevo Proyecto</p>
         </Link>
