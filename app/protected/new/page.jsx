@@ -1,8 +1,12 @@
-import ProjectTemplate from "../components/ProjectTemplate/ProjectTemplate"
+"use client";
+import Form from "./Form";
 
-export default function New(){
 
-    return(
-        <ProjectTemplate />
-    )
+//Para manejar los formularios de los demás
+export default function New() {
+  return (
+    <>
+      <Form></Form>
+    </>
+  );
 }

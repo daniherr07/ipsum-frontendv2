@@ -22,6 +22,7 @@ export default async function Login({ searchParams }) {
           height={30}
           alt="Logo"
           className="w-75"
+          loading="eager"
         />
 
         <Form className="flex flex-col gap-5 w-full" action={loginAction}>
@@ -33,10 +34,16 @@ export default async function Login({ searchParams }) {
               type="text"
               className="input"
               placeholder="John Doe / example@email.com"
+              name="username"
             />
 
             <label className="label">Contraseña</label>
-            <input type="password" className="input" placeholder="..." />
+            <input
+              type="password"
+              name="password"
+              className="input"
+              placeholder="..."
+            />
           </fieldset>
 
           <LoginButton />

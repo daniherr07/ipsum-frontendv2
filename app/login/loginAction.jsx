@@ -1,9 +1,20 @@
 "use server";
 
-import { redirect } from "next/navigation";
+export async function loginAction(formData) {
+  const username = formData.get("username");
+  const password = formData.get("password");
 
-export async function loginAction() {
+  const endpoint = process.env.BACKEND_URL + "/login";
+
+  const userData = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username: username, password: password }),
+  });
+
+  
+
   await new Promise((resolve) => setTimeout(resolve, 3000));
-
-  redirect("/login?error=true&msg=Credenciales%20incorrectas");
 }
