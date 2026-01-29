@@ -2,46 +2,46 @@ export const modifyData = [
   {
     label: "Analista de Entidad",
     slug: "analista-de-entidad",
-    table: "",
+    table: "analistas_entidades",
   },
   {
     label: "Centro de negocio",
     slug: "centro-de-negocio",
-    table: "",
+    table: "centros_negocios",
   },
   {
     label: "Constructor",
     slug: "constructor",
-    table: "",
+    table: "constructores",
   },
   {
     label: "Entidad",
     slug: "entidad",
-    table: "",
+    table: "entidades",
   },
   {
     label: "Fiscal",
     slug: "fiscal",
-    table: "",
+    table: "fiscales",
   },
   {
     label: "Grupo",
     slug: "grupo",
-    table: "",
+    table: "grupos_proyectos",
   },
   {
     label: "Promotor Ipsum",
     slug: "promotor-ipsum",
-    table: "",
+    table: "promotores_ipsum",
   },
   {
     label: "Bono",
     slug: "bono",
-    table: "",
+    table: "tipos_bono",
   },
   {
     label: "Subtipo de bono",
     slug: "subtipo-de-bono",
-    table: "",
+    table: "variantes_bono",
   },
 ];
