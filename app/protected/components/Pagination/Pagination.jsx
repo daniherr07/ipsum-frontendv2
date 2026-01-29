@@ -1,19 +1,12 @@
 "use client";
 
-import { Book, Users, MapPin, Building2 } from "lucide-react";
-import { useState } from "react";
+import { Book, Users, MapPin, Building2, Smile, SkipForward } from "lucide-react";
 
-export default function Pagination({current, setCurrent}) {
+export default function Pagination({current, setCurrent, saveFunction}) {
   
 
   return (
     <div className="join">
-      <button
-        onClick={() => current != 0 && setCurrent(current - 1)}
-        className="join-item btn btn-primary "
-      >
-        «
-      </button>
       <button
         onClick={() => setCurrent(0)}
         className={`join-item btn ${current == 0 && "btn-primary btn-soft"}`}
@@ -38,11 +31,19 @@ export default function Pagination({current, setCurrent}) {
       >
         <Building2></Building2>
       </button>
+
       <button
-        onClick={() => current != 3 && setCurrent(current + 1)}
-        className="join-item btn btn-primary"
+        onClick={() => setCurrent(4)}
+        className={`join-item btn ${current == 4 && "btn-primary btn-soft"}`}
       >
-        »
+        <Smile></Smile>
+      </button>
+
+      <button
+        onClick={saveFunction}
+        className={`join-item btn btn-secondary`}
+      >
+        <SkipForward></SkipForward>
       </button>
     </div>
   );

@@ -1,6 +1,10 @@
 "use server";
 
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
 export async function loginAction(formData) {
+  const cookieStore = await cookies();
   const username = formData.get("username");
   const password = formData.get("password");
 
@@ -14,7 +18,20 @@ export async function loginAction(formData) {
     body: JSON.stringify({ username: username, password: password }),
   });
 
-  
-
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  if (userData.ok) {
+    const data = await userData.json();
+    cookieStore.set(
+      "userData",
+      JSON.stringify({
+        nombre: data.nombre,
+        rol_id: data.rol_id,
+      }),
+      {
+        httpOnly: false, // Recommended for security
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7, // 1 week
+      },
+    );
+    return redirect("/protected/search");
+  }
 }
