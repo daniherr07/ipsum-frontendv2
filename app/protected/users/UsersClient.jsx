@@ -1,15 +1,15 @@
 "use client";
 
 import Form from "next/form";
-import { Save } from "lucide-react";
 import { updateAction } from "./updateAction";
 
 export default function UsersClient({ usersData }) {
-  console.log(usersData);
 
   return (
     <main className="flex p-1 flex-col gap-3 items-center">
       <h1 className="font-bold text-lg mt-3"> Gestión de Usuarios</h1>
+
+      <button className="btn btn-primary w-full">Añadir Usuario</button>
 
       {usersData.usuarios &&
         usersData.usuarios.map((usuario) => (
@@ -26,7 +26,10 @@ export default function UsersClient({ usersData }) {
               </span>
             </summary>
             <div className="collapse-content text-sm">
-              <Form action={updateAction}>
+              <Form action={async (formData) => {
+                await updateAction(formData)
+                window.location.reload()
+              }}>
                 <input type="hidden" name="id" defaultValue={usuario.id} />
                 <fieldset className="fieldset">
                   <legend className="fieldset-legend">Nombre</legend>

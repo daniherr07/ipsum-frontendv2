@@ -23,6 +23,7 @@ export async function loginAction(formData) {
     cookieStore.set(
       "userData",
       JSON.stringify({
+        id: data.id,
         nombre: data.nombre,
         rol_id: data.rol_id,
       }),

@@ -32,7 +32,7 @@ export default async function Login({ searchParams }) {
             <label className="label">Usuario o Email</label>
             <input
               type="text"
-              className="input"
+              className="input w-full"
               placeholder="John Doe / example@email.com"
               name="username"
             />
@@ -41,7 +41,7 @@ export default async function Login({ searchParams }) {
             <input
               type="password"
               name="password"
-              className="input"
+              className="input w-full"
               placeholder="..."
             />
           </fieldset>

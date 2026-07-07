@@ -13,6 +13,7 @@ import { newProjectAction } from "./newProjectAction";
 import CreateProjectButton from "./CreateProjectButton";
 import { cookies } from "next/headers";
 import { logOffAction } from "./logOffAction";
+import isAdmin from "../../isAdmin";
 
 export default async function NavBar() {
   const cookieStore = await cookies();
@@ -63,24 +64,31 @@ export default async function NavBar() {
                 <p>Buscar</p>
               </Link>
             </li>
-            <li>
-              <Link
-                href={"/protected/modify"}
-                className="flex flex-row items-center justify-start"
-              >
-                <Pencil size={20} />
-                <p>Modificar</p>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={"/protected/users"}
-                className="flex flex-row items-center justify-start"
-              >
-                <UserPen size={20} />
-                <p>Usuarios</p>
-              </Link>
-            </li>
+
+            {isAdmin(userData.rol_id) && (
+              <>
+                <li>
+                  <Link
+                    href={"/protected/modify"}
+                    className="flex flex-row items-center justify-start"
+                  >
+                    <Pencil size={20} />
+                    <p>Modificar</p>
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
+                    href={"/protected/users"}
+                    className="flex flex-row items-center justify-start"
+                  >
+                    <UserPen size={20} />
+                    <p>Usuarios</p>
+                  </Link>
+                </li>
+              </>
+            )}
+
             <li>
               <Form action={logOffAction} className="text-error">
                 <button type="submit" className="btn btn-error btn-soft">
@@ -132,8 +140,6 @@ export default async function NavBar() {
 
       {/** Botón a la derecha */}
       <div className="navbar-end flex gap-5 w-full">
-        <Bell size={30} className="text-primary" />
-
         <label htmlFor="newProjectModal" className="btn btn-primary">
           <Plus size={20} />
           <p>Nuevo Proyecto</p>

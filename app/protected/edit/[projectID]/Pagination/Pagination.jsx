@@ -1,10 +1,18 @@
 "use client";
 
-import { Book, Users, MapPin, Building2, Smile, SkipForward } from "lucide-react";
+import {
+  Book,
+  Users,
+  MapPin,
+  Building2,
+  Smile,
+  SkipForward,
+} from "lucide-react";
 
-export default function Pagination({current, setCurrent, saveFunction}) {
-  
-
+export default function Pagination({
+  current,
+  setCurrent,
+}) {
   return (
     <div className="join">
       <button
@@ -39,12 +47,14 @@ export default function Pagination({current, setCurrent, saveFunction}) {
         <Smile></Smile>
       </button>
 
+      {/* The button to open modal */}
       <button
-        onClick={saveFunction}
-        className={`join-item btn btn-secondary`}
+        onClick={() => setCurrent(5)}
+        className={`join-item btn ${current == 5 && "btn-primary btn-soft"}`}
       >
         <SkipForward></SkipForward>
       </button>
+
     </div>
   );
 }

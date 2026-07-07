@@ -13,6 +13,7 @@ export default async function Edit({ params }) {
   const result = await projectData.json();
   const formValues = await formValuesReq.json();
 
+
   const data = {
     projectName: result.projectName.nombre,
     projectSlug: result.projectName.slug,
@@ -21,6 +22,7 @@ export default async function Edit({ params }) {
     locationsData: result.locationsData,
     adminsData: result.adminsData,
     peopleData: result.peopleData,
+    stagesData: result.stagesData,
   };
   return (
     <>

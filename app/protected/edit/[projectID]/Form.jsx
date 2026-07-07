@@ -1,6 +1,6 @@
 "use client";
 
-import Pagination from "../../components/Pagination/Pagination";
+import Pagination from "./Pagination/Pagination";
 import { Save } from "lucide-react";
 
 import Basic from "./Forms/Basic";
@@ -8,6 +8,7 @@ import Family from "./Forms/Family";
 import Location from "./Forms/Location";
 import Administrative from "./Forms/Administrative";
 import People from "./Forms/People";
+import ChangeStage from "./ChangeStage/ChangeStage";
 
 import { useEffect, useState } from "react";
 import { saveInfo } from "./SaveActions/saveInfo";
@@ -47,7 +48,11 @@ export default function Form({
     <main className="w-full h-full flex flex-col items-center justify-center p-3 gap-3">
       <h1>{data.projectName}</h1>
 
-      <Pagination current={current} setCurrent={setCurrent}></Pagination>
+      <Pagination
+        current={current}
+        setCurrent={setCurrent}
+        projectID={projectID}
+      ></Pagination>
 
       {current == 0 && (
         <Basic
@@ -84,6 +89,13 @@ export default function Form({
           setPeopleForm={setPeopleForm}
           formValues={peopleFormValues}
         ></People>
+      )}
+
+      {current == 5 && (
+        <ChangeStage
+          projectID={projectID}
+          currentEtapaId={data.stagesData.etapa_id}
+        />
       )}
 
       <button
