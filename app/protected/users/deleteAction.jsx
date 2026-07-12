@@ -3,27 +3,25 @@
 import { getSessionUser } from "../getSessionUser";
 import isAdmin from "../isAdmin";
 
-export async function updateAction(formData) {
+export async function deleteAction(id) {
   const user = await getSessionUser();
   if (!user || !isAdmin(user.rol_id)) {
     return { ok: false, message: "No tiene permisos para esta acción" };
   }
 
-  const endpoint = process.env.BACKEND_URL + "/updateUsers";
-
-  const data = Object.fromEntries(formData.entries());
+  const endpoint = process.env.BACKEND_URL + "/deleteUser";
 
   const res = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ id }),
   }).catch(() => null);
 
   if (!res || !res.ok) {
-    return { ok: false, message: "No se pudo actualizar el usuario" };
+    return { ok: false, message: "No se pudo eliminar el usuario" };
   }
 
-  return { ok: true, message: "Usuario actualizado correctamente" };
+  return { ok: true, message: "Usuario eliminado correctamente" };
 }

@@ -13,11 +13,12 @@ export async function newProjectAction(formData) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ projectName: projectName }),
-  });
+  }).catch(() => null);
 
-  if (projectData.ok) {
-    const {projectId} = await projectData.json()
-    console.log(projectId)
-    redirect(`/protected/edit/${projectId}`)
+  if (!projectData || !projectData.ok) {
+    return { ok: false, message: "No se pudo crear el proyecto" };
   }
+
+  const { projectId } = await projectData.json();
+  redirect(`/protected/edit/${projectId}`);
 }

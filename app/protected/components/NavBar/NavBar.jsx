@@ -1,19 +1,13 @@
 import Link from "next/link";
-import {
-  Search,
-  Pencil,
-  Plus,
-  CircleUserRound,
-  Bell,
-  UserPen,
-} from "lucide-react";
-import { modifyData } from "../../../const";
+import { Search, Plus, CircleUserRound, UserPen, X, Pencil } from "lucide-react";
 import Form from "next/form";
-import { newProjectAction } from "./newProjectAction";
-import CreateProjectButton from "./CreateProjectButton";
+import { modifyData } from "../../../const";
+import NewProjectModal from "./NewProjectModal";
+import NotificationsBell from "./NotificationsBell";
 import { cookies } from "next/headers";
 import { logOffAction } from "./logOffAction";
 import isAdmin from "../../isAdmin";
+import ModifyDesktopMenu from "./ModifyDesktopMenu";
 
 export default async function NavBar() {
   const cookieStore = await cookies();
@@ -21,11 +15,13 @@ export default async function NavBar() {
   const cookieData = cookieStore.get("userData");
   const userData = JSON.parse(cookieData.value);
   const userName = userData.nombre;
+  const isUserAdmin = isAdmin(userData.rol_id);
+  const modifyMenuItems = modifyData.map(({ slug, label }) => ({ slug, label }));
 
   return (
-    <div className="navbar bg-base-300 shadow-sm">
+    <div className="navbar bg-base-300 shadow-sm px-2 xl:px-4 gap-2 lg:gap-4 overflow-visible">
       {/** Menu Dropdown Mobiles */}
-      <div className="navbar-start">
+      <div className="navbar-start lg:flex-1">
         <div className="dropdown z-300">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
             <svg
@@ -65,7 +61,7 @@ export default async function NavBar() {
               </Link>
             </li>
 
-            {isAdmin(userData.rol_id) && (
+            {isUserAdmin && (
               <>
                 <li>
                   <Link
@@ -99,85 +95,68 @@ export default async function NavBar() {
           </ul>
         </div>
 
-        <div className="gap-2 items-center justify-center bg-base-100 p-2 rounded shadow-sm hidden lg:flex">
-          <CircleUserRound size={30} />
-          <p>Steven</p>
+        {/* En escritorio el cierre de sesión queda junto al bloque de usuario para acceso rápido */}
+        <div className="items-center justify-center bg-base-100 p-2 rounded shadow-sm hidden lg:flex gap-2">
+          <Form action={logOffAction}>
+            <button
+              type="submit"
+              className="btn btn-error btn-square btn-sm text-white"
+              aria-label="Cerrar sesión"
+              title="Cerrar sesión"
+            >
+              <X size={16} color="white" />
+            </button>
+          </Form>
+          <div className="flex items-center gap-2">
+            <CircleUserRound size={30} />
+            <p>{userName}</p>
+          </div>
         </div>
       </div>
 
       {/** Menu Centro Escritorio */}
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-          <li>
-            <Link href={"/protected/search"}>Buscar</Link>
+      <div className="navbar-center hidden lg:flex flex-none justify-center">
+        <ul className="flex items-center gap-2 xl:gap-3">
+          <li className="list-none">
+            <Link
+              href={"/protected/search"}
+              className="btn btn-ghost bg-base-100 inline-flex items-center gap-2"
+            >
+              <Search size={18} />
+              Buscar
+            </Link>
           </li>
-          <li>
-            <details>
-              <summary>Modificar</summary>
-              <ul className="p-2 bg-base-300 w-40 z-1">
-                {modifyData.map((item, index) => (
-                  <li key={index}>
-                    <Link
-                      prefetch={false}
-                      href={`/protected/modify?type=${item.slug}`}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </details>
-          </li>
-          <li>
-            <Form action={logOffAction} className="text-error">
-              <button type="submit" className="btn btn-error btn-ghost">
-                Cerrar Sesión
-              </button>
-            </Form>
-          </li>
+
+          {isUserAdmin && (
+            <>
+              <li className="list-none">
+                <ModifyDesktopMenu items={modifyMenuItems} />
+              </li>
+              <li className="list-none">
+                <Link
+                  href={"/protected/users"}
+                  className="btn btn-ghost bg-base-100 inline-flex items-center gap-2"
+                >
+                  <UserPen size={18} />
+                  Usuarios
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </div>
 
       {/** Botón a la derecha */}
-      <div className="navbar-end flex gap-5 w-full">
+      <div className="navbar-end flex-none ml-auto flex items-center gap-2 lg:gap-3 lg:flex-1 lg:justify-end">
+        <NotificationsBell userId={userData.id} />
+
         <label htmlFor="newProjectModal" className="btn btn-primary">
           <Plus size={20} />
-          <p>Nuevo Proyecto</p>
+          <p className="hidden sm:block">Nuevo Proyecto</p>
         </label>
 
         {/* Put this part before </body> tag */}
-        <input type="checkbox" id="newProjectModal" className="modal-toggle" />
-        <div className="modal" role="dialog">
-          <div className="modal-box">
-            <h3 className="text-lg font-bold">Nuevo Proyecto</h3>
-
-            <Form
-              className="flex flex-col gap-5 w-full"
-              action={newProjectAction}
-            >
-              <fieldset className="fieldset mt-3">
-                <label className="label">Nombre del Proyecto</label>
-                <input
-                  type="text"
-                  className="input"
-                  placeholder="Proyecto Max Peralta"
-                  name="projectName"
-                  required
-                />
-              </fieldset>
-
-              <div className="modal-action flex">
-                <label htmlFor="newProjectModal" className="flex-1">
-                  <span className="btn w-full">Cancelar</span>
-                </label>
-
-                <label htmlFor="newProjectModal" className="flex-1">
-                  <CreateProjectButton></CreateProjectButton>
-                </label>
-              </div>
-            </Form>
-          </div>
-        </div>
+        <NewProjectModal />
       </div>
     </div>
   );

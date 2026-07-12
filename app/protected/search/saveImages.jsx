@@ -1,27 +1,25 @@
 "use server";
 
 export async function saveImages(files, projectId, projectSlug) {
-  try {
-    const data = new FormData();
-    const endpointFile = process.env.BACKEND_URL + "/addProjectPhoto";
+  const data = new FormData();
+  const endpointFile = process.env.BACKEND_URL + "/addProjectPhoto";
 
-    // 🔥 append uno por uno
-    files.forEach((file) => {
-      data.append("files", file);
-    });
+  files.forEach((file) => {
+    data.append("files", file);
+  });
 
-    data.append("path", projectSlug);
-    data.append("proyecto_id", projectId);
+  data.append("path", projectSlug);
+  data.append("proyecto_id", projectId);
 
-    const res = await fetch(endpointFile, {
-      method: "POST",
-      body: data,
-    });
+  const res = await fetch(endpointFile, {
+    method: "POST",
+    body: data,
+  }).catch(() => null);
 
-    if (!res.ok) {
-      throw new Error("Error al guardar las fotos");
-    }
-  } catch (error) {
-    console.error(error);
+  if (!res || !res.ok) {
+    return { ok: false, message: "No se pudieron subir las fotos" };
   }
+
+  const result = await res.json();
+  return { ok: true, message: result.message || "Fotos subidas correctamente" };
 }

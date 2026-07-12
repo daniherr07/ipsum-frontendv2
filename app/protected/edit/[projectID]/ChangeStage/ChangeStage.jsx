@@ -1,11 +1,15 @@
 "use client";
-import { etapas } from "../../../../etapas";
+import { useState } from "react";
 import { stageAction } from "./stageAction";
 import { useRouter } from "next/navigation";
+import StatusModal from "../../../components/StatusModal";
 
-export default function ChangeStage({ projectID, currentEtapaId }) {
+export default function ChangeStage({ projectID, currentEtapaId, etapas }) {
   const router = useRouter();
-
+  // Solo se usa para mostrar el modal cuando el cambio de etapa falla; si
+  // sale bien no se muestra nada, porque el usuario suele ir dando clic por
+  // varias etapas seguidas y un modal en cada clic sería molesto.
+  const [status, setStatus] = useState(null);
 
   return (
     <div className="card bg-base-200 w-full shadow-sm">
@@ -17,17 +21,23 @@ export default function ChangeStage({ projectID, currentEtapaId }) {
           {etapas.map((etapa) => (
             <li
               onClick={async () => {
-                await stageAction(projectID, etapa.id);
-                router.refresh()
+                const result = await stageAction(projectID, etapa.id);
+                if (result.ok) {
+                  router.refresh();
+                } else {
+                  setStatus(result);
+                }
               }}
               className={`step ${etapa.id <= currentEtapaId && "step-primary"} text-left`}
               key={etapa.id}
             >
-              {etapa.label}
+              {etapa.nombre}
             </li>
           ))}
         </ul>
       </div>
+
+      <StatusModal status={status} onClose={() => setStatus(null)} />
     </div>
   );
 }

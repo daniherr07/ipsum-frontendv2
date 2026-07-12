@@ -16,12 +16,15 @@ export default async function Forget({ searchParams }) {
             lg:w-fit lg:h-fit lg:p-8 lg:border lg:border-white/20 lg:shadow-2xl lg:rounded
         "
       >
+        {/* logo.svg mide 1579x455 (~3.47:1); width/height deben respetar esa
+            proporción para que next/image no lo estire, y el className
+            controla el tamaño real de forma responsive */}
         <Image
           src={"/logo.svg"}
-          width={30}
-          height={30}
+          width={350}
+          height={101}
           alt="Logo"
-          className="w-75"
+          className="w-48 sm:w-64 h-auto"
         />
 
         <p className="text-base-content/70">
@@ -35,8 +38,10 @@ export default async function Forget({ searchParams }) {
             <label className="label">Usuario o Email</label>
             <input
               type="email"
+              name="email"
               className="input"
               placeholder="example@email.com"
+              required
             />
           </fieldset>
 
@@ -52,7 +57,7 @@ export default async function Forget({ searchParams }) {
               className="modal-toggle"
             />
             <div className="modal" role="dialog">
-              <div className="modal-box border border-success flex flex-col items-center justify-center w-fit shadow-md shadow-success/30">
+              <div className="modal-box border border-success flex flex-col items-center justify-center w-fit max-w-[90vw] shadow-md shadow-success/30">
                 <CircleCheck size={70} className="text-success" />
                 <p className="py-4 text-2xl font-bold">
                   Email enviado correctamente
@@ -76,7 +81,7 @@ export default async function Forget({ searchParams }) {
               className="modal-toggle"
             />
             <div className="modal" role="dialog">
-              <div className="modal-box border border-error flex flex-col items-center justify-center w-fit shadow-md shadow-error/30">
+              <div className="modal-box border border-error flex flex-col items-center justify-center w-fit max-w-[90vw] shadow-md shadow-error/30">
                 <CircleX size={70} className="text-error" />
                 <p className="py-4 text-2xl font-bold">{query.msg}</p>
                 <div className="modal-action m-0">

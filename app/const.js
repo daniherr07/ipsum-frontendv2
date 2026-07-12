@@ -1,5 +1,3 @@
-import label from "daisyui/components/label";
-
 export const modifyData = [
   {
     label: "Analista de Entidad",
@@ -73,7 +71,7 @@ export const modifyData = [
       {
         type: "text",
         value: "telefono",
-        label: "Correo del Centro",
+        label: "Teléfono del Centro",
       },
       {
         type: "text",

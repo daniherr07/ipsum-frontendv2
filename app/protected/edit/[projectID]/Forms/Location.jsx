@@ -3,8 +3,16 @@
 import ubicaciones from "./ubicaciones";
 
 import { useState } from "react";
+import LocationImages from "./LocationImages";
+import LocationMap from "./LocationMap";
 
-export default function Location({ locationForm, setLocationForm }) {
+export default function Location({
+  locationForm,
+  setLocationForm,
+  projectID,
+  projectSlug,
+  formValues,
+}) {
   const [section, setSection] = useState(0);
   return (
     <div className="card bg-base-200 w-full shadow-sm">
@@ -25,20 +33,43 @@ export default function Location({ locationForm, setLocationForm }) {
           >
             Imágenes
           </a>
+
+          <a
+            role="tab"
+            className={`tab ${section == 2 && "tab-active"}`}
+            onClick={() => setSection(2)}
+          >
+            Mapa
+          </a>
         </div>
 
         {section == 0 && (
           <LocInfo
             locationForm={locationForm}
             setLocationForm={setLocationForm}
+            tiposPropietario={formValues?.tiposPropietario || []}
           ></LocInfo>
+        )}
+
+        {section == 1 && (
+          <LocationImages
+            projectID={projectID}
+            projectSlug={projectSlug}
+          ></LocationImages>
+        )}
+
+        {section == 2 && (
+          <LocationMap
+            locationForm={locationForm}
+            setLocationForm={setLocationForm}
+          ></LocationMap>
         )}
       </div>
     </div>
   );
 }
 
-function LocInfo({ locationForm, setLocationForm }) {
+function LocInfo({ locationForm, setLocationForm, tiposPropietario }) {
   // Provincias
   const provincias = Object.values(ubicaciones.provincias);
 
@@ -72,7 +103,7 @@ function LocInfo({ locationForm, setLocationForm }) {
         {/* PROVINCIA */}
         <label className="label">Provincia</label>
         <select
-          className="select"
+          className="select w-full"
           value={locationForm.provincia}
           onChange={(e) => {
             setLocationForm((prev) => ({
@@ -97,7 +128,7 @@ function LocInfo({ locationForm, setLocationForm }) {
         {/* CANTÓN */}
         <label className="label">Cantón</label>
         <select
-          className="select"
+          className="select w-full"
           value={locationForm.canton}
           disabled={!locationForm.provincia}
           onChange={(e) => {
@@ -122,7 +153,7 @@ function LocInfo({ locationForm, setLocationForm }) {
         {/* DISTRITO */}
         <label className="label">Distrito</label>
         <select
-          className="select"
+          className="select w-full"
           value={locationForm.distrito}
           disabled={!locationForm.canton}
           onChange={(e) => {
@@ -162,7 +193,7 @@ function LocInfo({ locationForm, setLocationForm }) {
 
         <label className="label">Tipo de identificación del propietario</label>
         <select
-          className="select"
+          className="select w-full"
           value={locationForm.tipo_propietario}
           onChange={(e) => {
             setLocationForm((prev) => ({
@@ -174,15 +205,17 @@ function LocInfo({ locationForm, setLocationForm }) {
           <option disabled={true} value={""}>
             Seleccione el tipo
           </option>
-          <option value={"Persona Juridica"}>Persona Jurídica</option>
-          <option value={"Persona Fisica"}>Persona Física</option>
-          <option value="Otro">Otro</option>
+          {tiposPropietario.map((tipo) => (
+            <option value={tipo.nombre} key={tipo.id}>
+              {tipo.nombre}
+            </option>
+          ))}
         </select>
 
         <label className="label">Identificación del Propietario</label>
         <input
           type="text"
-          className="input join-item"
+          className="input w-full"
           placeholder="0-0000-0000"
           value={locationForm.propietario}
           onChange={(e) => {
@@ -196,7 +229,7 @@ function LocInfo({ locationForm, setLocationForm }) {
         <label className="label">Número de Plano Catástro</label>
         <input
           type="text"
-          className="input join-item"
+          className="input w-full"
           placeholder="0-0000-0000"
           value={locationForm.plano_catastro}
           onChange={(e) => {
@@ -210,7 +243,7 @@ function LocInfo({ locationForm, setLocationForm }) {
         <label className="label">Número de Finca</label>
         <input
           type="text"
-          className="input join-item"
+          className="input w-full"
           placeholder="0-0000-0000"
           value={locationForm.finca}
           onChange={(e) => {

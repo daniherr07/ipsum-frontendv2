@@ -1,5 +1,19 @@
 "use server";
 
+// Los 4 formularios (básicos, ubicación, administrativos, encargados) se
+// guardan en tablas distintas y no dependen entre sí, así que se envían en
+// paralelo en vez de uno tras otro (4x menos latencia de red en cada guardado
+// manual o automático).
+function postJSON(path, body) {
+  return fetch(process.env.BACKEND_URL + path, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+}
+
 export async function saveInfo(
   basicsForm,
   locationForm,
@@ -7,46 +21,16 @@ export async function saveInfo(
   peopleForm,
   projectID,
 ) {
-  
+  const results = await Promise.all([
+    postJSON("/insertBasics", { basicsForm, proyecto_id: projectID }),
+    postJSON("/insertLocations", { locationForm, proyecto_id: projectID }),
+    postJSON("/insertAdmins", { adminForm, proyecto_id: projectID }),
+    postJSON("/insertPeople", { peopleForm, proyecto_id: projectID }),
+  ]).catch(() => []);
 
-  const basicsEndpoint = process.env.BACKEND_URL + "/insertBasics";
+  const allOk = results.length === 4 && results.every((res) => res.ok);
 
-  await fetch(basicsEndpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ basicsForm, proyecto_id: projectID }),
-  });
-
-  
-  const locationsEndpoint = process.env.BACKEND_URL + "/insertLocations";
-
-  await fetch(locationsEndpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ locationForm, proyecto_id: projectID }),
-  });
-
-  const adminsEndpoint = process.env.BACKEND_URL + "/insertAdmins";
-
-  await fetch(adminsEndpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ adminForm, proyecto_id: projectID }),
-  });
-
-  const peopleEndpoint = process.env.BACKEND_URL + "/insertPeople";
-
-  await fetch(peopleEndpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ peopleForm, proyecto_id: projectID }),
-  });
+  return allOk
+    ? { ok: true, message: "Guardado correctamente" }
+    : { ok: false, message: "No se pudo guardar toda la información del proyecto" };
 }

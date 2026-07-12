@@ -1,18 +1,37 @@
 import Form from "./Form";
+import { getSessionUser } from "../../getSessionUser";
 
 //Para manejar los formularios de los demás
 export default async function Edit({ params }) {
   const { projectID } = await params;
+  const currentUser = await getSessionUser();
   const endpoint = process.env.BACKEND_URL + `/projectData/${projectID}`;
 
   const formValuesEndpoint = process.env.BACKEND_URL + `/formValues`;
+  // Antes app/etapas.js era un arreglo hardcodeado; ahora sale de la tabla
+  // etapas (vía /generics, igual que tipos_bono/variantes_bono). Lo mismo
+  // para tipos_propietario, que reemplaza el <select> hardcodeado de
+  // Location.jsx.
+  const etapasEndpoint = process.env.BACKEND_URL + `/generics/etapas`;
+  const tiposPropietarioEndpoint =
+    process.env.BACKEND_URL + `/generics/tipos_propietario`;
 
-  const projectData = await fetch(endpoint);
-  const formValuesReq = await fetch(formValuesEndpoint);
+  // Los 4 fetch son independientes entre sí, así que se disparan en
+  // paralelo en vez de esperar uno para empezar el otro.
+  const [projectDataRes, formValuesRes, etapasRes, tiposPropietarioRes] =
+    await Promise.all([
+      fetch(endpoint),
+      fetch(formValuesEndpoint),
+      fetch(etapasEndpoint),
+      fetch(tiposPropietarioEndpoint),
+    ]);
 
-  const result = await projectData.json();
-  const formValues = await formValuesReq.json();
-
+  const [result, formValues, etapas, tiposPropietario] = await Promise.all([
+    projectDataRes.json(),
+    formValuesRes.json(),
+    etapasRes.json(),
+    tiposPropietarioRes.json(),
+  ]);
 
   const data = {
     projectName: result.projectName.nombre,
@@ -31,7 +50,10 @@ export default async function Edit({ params }) {
         basicFormValues={formValues.basicFormValues}
         adminFormValues={formValues.adminFormValues}
         peopleFormValues={formValues.peopleFormValues}
+        locationFormValues={{ tiposPropietario }}
+        etapas={etapas}
         projectID={projectID}
+        currentUserId={currentUser?.id}
       ></Form>
     </>
   );

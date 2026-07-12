@@ -1,11 +1,41 @@
 "use client";
 
+import { useState } from "react";
+import QuickAddModal from "../QuickAddModal";
+
 export default function Administrative({
   adminForm,
   setAdminForm,
   formValues,
 }) {
-  console.log(adminForm)
+  // Entradas creadas desde el botón "Añadir" de este mismo formulario, para
+  // que aparezcan de inmediato en el <select> sin recargar toda la página.
+  const [extraOptions, setExtraOptions] = useState({
+    entidades: [],
+    centros_negocios: [],
+    analistas_entidades: [],
+  });
+
+  const addExtra = (table, row) => {
+    setExtraOptions((prev) => ({
+      ...prev,
+      [table]: [...prev[table], row],
+    }));
+  };
+
+  const entidades = [
+    ...(formValues?.entidades || []),
+    ...extraOptions.entidades,
+  ];
+  const centrosNegocio = [
+    ...(formValues?.centros_negocio || []),
+    ...extraOptions.centros_negocios,
+  ];
+  const analistaEntidades = [
+    ...(formValues?.analista_entidades || []),
+    ...extraOptions.analistas_entidades,
+  ];
+
   return (
     <div className="card bg-base-200 w-full shadow-sm">
       <div className="card-body">
@@ -14,9 +44,18 @@ export default function Administrative({
         <fieldset className="fieldset border-base-content/40 rounded-box border p-4 gap-3">
           <legend className="fieldset-legend">Entidad</legend>
 
-          <label className="label">Entidad</label>
+          <label className="label flex items-center gap-2">
+            Entidad
+            <QuickAddModal
+              table="entidades"
+              onCreated={(row) => {
+                addExtra("entidades", row);
+                setAdminForm((prev) => ({ ...prev, entidad_id: row.id }));
+              }}
+            />
+          </label>
           <select
-            className="select"
+            className="select w-full"
             value={adminForm.entidad_id}
             onChange={(e) => {
               setAdminForm((prev) => ({
@@ -28,17 +67,29 @@ export default function Administrative({
             <option disabled={true} value={""}>
               Seleccione la entidad
             </option>
-            {formValues &&
-              formValues.entidades.map((entidad) => (
-                <option value={entidad.id} key={entidad.id}>
-                  {entidad.nombre}
-                </option>
-              ))}
+            {entidades.map((entidad) => (
+              <option value={entidad.id} key={entidad.id}>
+                {entidad.nombre}
+              </option>
+            ))}
           </select>
 
-          <label className="label">Centro de Negocios</label>
+          <label className="label flex items-center gap-2">
+            Centro de Negocios
+            <QuickAddModal
+              table="centros_negocios"
+              relationOptions={{ entidad_id: entidades }}
+              onCreated={(row) => {
+                addExtra("centros_negocios", row);
+                setAdminForm((prev) => ({
+                  ...prev,
+                  centro_negocio_id: row.id,
+                }));
+              }}
+            />
+          </label>
           <select
-            className="select"
+            className="select w-full"
             value={adminForm.centro_negocio_id}
             disabled={!adminForm.entidad_id}
             onChange={(e) => {
@@ -51,9 +102,8 @@ export default function Administrative({
             <option disabled={true} value={""}>
               Seleccione el centro de negocios
             </option>
-            {formValues &&
-              adminForm.entidad_id != "" &&
-              formValues.centros_negocio.map(
+            {adminForm.entidad_id != "" &&
+              centrosNegocio.map(
                 (centro) =>
                   centro.entidad_id == adminForm.entidad_id && (
                     <option value={centro.id} key={centro.id}>
@@ -63,9 +113,22 @@ export default function Administrative({
               )}
           </select>
 
-          <label className="label">Analista de Entidad</label>
+          <label className="label flex items-center gap-2">
+            Analista de Entidad
+            <QuickAddModal
+              table="analistas_entidades"
+              relationOptions={{ entidad_id: entidades }}
+              onCreated={(row) => {
+                addExtra("analistas_entidades", row);
+                setAdminForm((prev) => ({
+                  ...prev,
+                  analista_entidad_id: row.id,
+                }));
+              }}
+            />
+          </label>
           <select
-            className="select"
+            className="select w-full"
             value={adminForm.analista_entidad_id}
             disabled={!adminForm.entidad_id}
             onChange={(e) => {
@@ -78,9 +141,8 @@ export default function Administrative({
             <option disabled={true} value={""}>
               Seleccione el analista de entidad
             </option>
-            {formValues &&
-              adminForm.entidad_id != "" &&
-              formValues.analista_entidades.map(
+            {adminForm.entidad_id != "" &&
+              analistaEntidades.map(
                 (analista) =>
                   analista.entidad_id == adminForm.entidad_id && (
                     <option value={analista.id} key={analista.id}>
@@ -97,7 +159,7 @@ export default function Administrative({
           <label className="label">Presupuesto</label>
           <input
             type="text"
-            className="input join-item"
+            className="input w-full"
             placeholder="0000"
             value={adminForm.presupuesto}
             onChange={(e) => {
@@ -111,7 +173,7 @@ export default function Administrative({
           <label className="label">Avalúo</label>
           <input
             type="text"
-            className="input join-item"
+            className="input w-full"
             placeholder="0000"
             value={adminForm.avaluo}
             onChange={(e) => {
@@ -125,7 +187,7 @@ export default function Administrative({
           <label className="label">APC</label>
           <input
             type="text"
-            className="input join-item"
+            className="input w-full"
             placeholder="0000"
             value={adminForm.apc}
             onChange={(e) => {
@@ -139,7 +201,7 @@ export default function Administrative({
           <label className="label">CFIA</label>
           <input
             type="text"
-            className="input join-item"
+            className="input w-full"
             placeholder="0000"
             value={adminForm.cfia}
             onChange={(e) => {
