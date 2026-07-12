@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Search, Plus, CircleUserRound, UserPen, X, Pencil } from "lucide-react";
+import { Search, Plus, CircleUserRound, UserPen, X, Pencil, History } from "lucide-react";
 import Form from "next/form";
 import { modifyData } from "../../../const";
 import NewProjectModal from "./NewProjectModal";
@@ -82,6 +82,16 @@ export default async function NavBar() {
                     <p>Usuarios</p>
                   </Link>
                 </li>
+
+                <li>
+                  <Link
+                    href={"/protected/bitacora"}
+                    className="flex flex-row items-center justify-start"
+                  >
+                    <History size={20} />
+                    <p>Bitácora</p>
+                  </Link>
+                </li>
               </>
             )}
 
@@ -139,6 +149,15 @@ export default async function NavBar() {
                 >
                   <UserPen size={18} />
                   Usuarios
+                </Link>
+              </li>
+              <li className="list-none">
+                <Link
+                  href={"/protected/bitacora"}
+                  className="btn btn-ghost bg-base-100 inline-flex items-center gap-2"
+                >
+                  <History size={18} />
+                  Bitácora
                 </Link>
               </li>
             </>

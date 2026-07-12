@@ -22,6 +22,7 @@ export default function Form({
   peopleFormValues,
   locationFormValues,
   etapas,
+  stageNotificationRoles,
   projectID,
   currentUserId,
 }) {
@@ -135,6 +136,7 @@ export default function Form({
             projectID={projectID}
             currentEtapaId={data.stagesData.etapa_id}
             etapas={etapas}
+            stageNotificationRoles={stageNotificationRoles}
           />
         )}
       </div>

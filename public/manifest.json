@@ -1,0 +1,13 @@
+{
+  "name": "Ipsum - Sistema",
+  "short_name": "Ipsum",
+  "description": "Sistema de gestión de proyectos de bono de vivienda",
+  "start_url": "/protected/search",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#035496",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

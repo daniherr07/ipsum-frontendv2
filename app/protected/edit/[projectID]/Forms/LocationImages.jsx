@@ -7,6 +7,7 @@ import { Trash } from "lucide-react";
 import getLocationImages from "../GetLocation/getLocationImages";
 import { saveLocationImages } from "../SaveActions/saveLocationImages";
 import { deleteLocationImage } from "../SaveActions/deleteLocationImage";
+import { convertHeicToPngIfNeeded } from "../../../lib/convertHeicToPng";
 import StatusModal from "../../../components/StatusModal";
 
 export default function LocationImages({ projectID, projectSlug }) {
@@ -34,8 +35,13 @@ export default function LocationImages({ projectID, projectSlug }) {
 
     setUploading(true);
     try {
+      // Convierte cualquier foto HEIC/HEIF (formato por defecto de iPhone)
+      // a PNG antes de subir, para evitar errores de visualización después.
+      const convertedFiles = await Promise.all(
+        selectedFiles.map(convertHeicToPngIfNeeded),
+      );
       const result = await saveLocationImages(
-        selectedFiles,
+        convertedFiles,
         projectID,
         projectSlug,
       );

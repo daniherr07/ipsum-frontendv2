@@ -48,6 +48,11 @@ export default async function Login({ searchParams }) {
               className="input w-full"
               placeholder="..."
             />
+
+            <label className="label mt-2 justify-start gap-2">
+              <input type="checkbox" name="remember" className="checkbox checkbox-sm" />
+              Recordar esta computadora
+            </label>
           </fieldset>
 
           <LoginButton />

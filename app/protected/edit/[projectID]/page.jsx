@@ -15,23 +15,35 @@ export default async function Edit({ params }) {
   const etapasEndpoint = process.env.BACKEND_URL + `/generics/etapas`;
   const tiposPropietarioEndpoint =
     process.env.BACKEND_URL + `/generics/tipos_propietario`;
+  // A quién se notifica al cambiar a cada etapa (ver lib/notificationRoles.js
+  // en el backend), para mostrarlo junto al selector de etapas.
+  const stageNotificationRolesEndpoint =
+    process.env.BACKEND_URL + `/stageNotificationRoles`;
 
-  // Los 4 fetch son independientes entre sí, así que se disparan en
+  // Los 5 fetch son independientes entre sí, así que se disparan en
   // paralelo en vez de esperar uno para empezar el otro.
-  const [projectDataRes, formValuesRes, etapasRes, tiposPropietarioRes] =
-    await Promise.all([
-      fetch(endpoint),
-      fetch(formValuesEndpoint),
-      fetch(etapasEndpoint),
-      fetch(tiposPropietarioEndpoint),
-    ]);
-
-  const [result, formValues, etapas, tiposPropietario] = await Promise.all([
-    projectDataRes.json(),
-    formValuesRes.json(),
-    etapasRes.json(),
-    tiposPropietarioRes.json(),
+  const [
+    projectDataRes,
+    formValuesRes,
+    etapasRes,
+    tiposPropietarioRes,
+    stageNotificationRolesRes,
+  ] = await Promise.all([
+    fetch(endpoint),
+    fetch(formValuesEndpoint),
+    fetch(etapasEndpoint),
+    fetch(tiposPropietarioEndpoint),
+    fetch(stageNotificationRolesEndpoint),
   ]);
+
+  const [result, formValues, etapas, tiposPropietario, stageNotificationRoles] =
+    await Promise.all([
+      projectDataRes.json(),
+      formValuesRes.json(),
+      etapasRes.json(),
+      tiposPropietarioRes.json(),
+      stageNotificationRolesRes.json(),
+    ]);
 
   const data = {
     projectName: result.projectName.nombre,
@@ -52,6 +64,7 @@ export default async function Edit({ params }) {
         peopleFormValues={formValues.peopleFormValues}
         locationFormValues={{ tiposPropietario }}
         etapas={etapas}
+        stageNotificationRoles={stageNotificationRoles}
         projectID={projectID}
         currentUserId={currentUser?.id}
       ></Form>

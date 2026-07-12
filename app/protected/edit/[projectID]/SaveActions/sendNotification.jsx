@@ -4,6 +4,7 @@ export async function sendNotification(
   proyectoId,
   remitenteUsuarioId,
   destinatarioUsuarioId,
+  asunto,
   mensaje,
 ) {
   const endpoint = process.env.BACKEND_URL + "/insertNotification";
@@ -15,6 +16,7 @@ export async function sendNotification(
       proyecto_id: proyectoId,
       remitente_usuario_id: remitenteUsuarioId,
       destinatario_usuario_id: destinatarioUsuarioId,
+      asunto,
       mensaje,
     }),
   }).catch(() => null);

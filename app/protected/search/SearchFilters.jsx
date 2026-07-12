@@ -22,6 +22,7 @@ import { saveImages } from "./saveImages";
 import { deleteImage } from "./deleteImage";
 import { updateProjectStatus } from "./updateProjectStatus";
 import getImages from "./getImages";
+import { convertHeicToPngIfNeeded } from "../lib/convertHeicToPng";
 import Image from "next/image";
 import StatusModal from "../components/StatusModal";
 
@@ -521,6 +522,8 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
   const [status, setStatus] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  // Filtro de la pestaña "Notas": "todos" | "Análisis" | "Técnico".
+  const [notesTipoFilter, setNotesTipoFilter] = useState("todos");
   const fileUploadId = `fileUpload_${projectKey}`;
   const discardModalId = `discard_${projectKey}`;
   const newBitModalId = `newBit_${projectKey}`;
@@ -551,7 +554,12 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
 
     setUploading(true);
     try {
-      const result = await saveImages(selectedFiles, project.id, project.slug);
+      // Convierte cualquier foto HEIC/HEIF (formato por defecto de iPhone)
+      // a PNG antes de subir, para evitar errores de visualización después.
+      const convertedFiles = await Promise.all(
+        selectedFiles.map(convertHeicToPngIfNeeded),
+      );
+      const result = await saveImages(convertedFiles, project.id, project.slug);
       setStatus(result);
       if (result.ok) {
         setReload(!reload);
@@ -843,33 +851,68 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
 
           {tab == 2 && loading == false && (
             <>
-              {/* The button to open modal */}
-              <label
-                htmlFor={newBitModalId}
-                className="btn btn-secondary"
-              >
-                Añadir entrada
-              </label>
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                {/* The button to open modal */}
+                <label
+                  htmlFor={newBitModalId}
+                  className="btn btn-secondary"
+                >
+                  Añadir entrada
+                </label>
+
+                <select
+                  className="select select-sm w-40"
+                  value={notesTipoFilter}
+                  onChange={(e) => setNotesTipoFilter(e.target.value)}
+                >
+                  <option value="todos">Todas</option>
+                  <option value="Análisis">Análisis</option>
+                  <option value="Técnico">Técnico</option>
+                </select>
+              </div>
 
               {notes &&
-                notes.map((note, index) => (
-                  <div className="chat chat-start" key={index}>
-                    <div className="chat-header">
-                      {note.usuario}
-                      <time className="text-xs opacity-50">
-                        {note.fecha_ingreso}
-                      </time>
-                    </div>
-                    <div
-                      className={`chat-bubble ${note.tipo == "Análisis" ? "chat-bubble-primary" : "chat-bubble-secondary"}`}
-                    >
-                      {note.descripcion}
-                    </div>
-                    <div className="chat-footer opacity-50">
-                      Tipo: {note.tipo}
-                    </div>
-                  </div>
-                ))}
+                notes
+                  .filter(
+                    (note) =>
+                      notesTipoFilter === "todos" || note.tipo === notesTipoFilter,
+                  )
+                  .map((note, index) => {
+                    // usuario_id viene del stored procedure getNotes; se
+                    // compara como string porque uno puede llegar number y
+                    // el otro (de la cookie) puede llegar distinto tipo.
+                    const isOwn =
+                      note.usuario_id != null &&
+                      String(note.usuario_id) === String(userData.id);
+
+                    return (
+                      <div
+                        className={`chat ${isOwn ? "chat-end" : "chat-start"}`}
+                        key={index}
+                      >
+                        <div className="chat-header">
+                          {note.usuario}
+                          <time className="text-xs opacity-50">
+                            {note.fecha_ingreso}
+                          </time>
+                        </div>
+                        <div
+                          className={`chat-bubble ${
+                            isOwn
+                              ? "chat-bubble-accent"
+                              : note.tipo == "Análisis"
+                                ? "chat-bubble-primary"
+                                : "chat-bubble-secondary"
+                          }`}
+                        >
+                          {note.descripcion}
+                        </div>
+                        <div className="chat-footer opacity-50">
+                          Tipo: {note.tipo}
+                        </div>
+                      </div>
+                    );
+                  })}
             </>
           )}
 

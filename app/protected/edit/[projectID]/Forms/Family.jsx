@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { saveFamily } from "../SaveActions/saveFamily";
 import { updateFamily } from "../SaveActions/editFamily";
 import { uploadMemberPhoto } from "../SaveActions/uploadMemberPhoto";
+import { convertHeicToPngIfNeeded } from "../../../lib/convertHeicToPng";
 import getFamilyData from "../GetFamily/getFamilyData";
 import Image from "next/image";
 import Link from "next/link";
@@ -82,8 +83,11 @@ export default function Family({ familyForm, projectID, projectSlug }) {
       return;
     }
     setUploadingId(member.db_id);
+    // Convierte HEIC/HEIF (formato por defecto de iPhone) a PNG antes de
+    // subir, para evitar errores de visualización después.
+    const convertedFile = await convertHeicToPngIfNeeded(file);
     const result = await uploadMemberPhoto(
-      file,
+      convertedFile,
       member.id,
       projectID,
       projectSlug,
@@ -316,12 +320,18 @@ function FamilyModal({ mode, initialValues, projectSlug, onClose, onDone }) {
                 type="file"
                 accept="image/*"
                 className="file-input w-full"
-                onChange={(e) =>
-                  setForm((prev) => ({
-                    ...prev,
-                    img_file: e.target.files?.[0] || "",
-                  }))
-                }
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) {
+                    setForm((prev) => ({ ...prev, img_file: "" }));
+                    return;
+                  }
+                  // Convierte HEIC/HEIF (formato por defecto de iPhone) a
+                  // PNG antes de subir, para evitar errores de
+                  // visualización después.
+                  const convertedFile = await convertHeicToPngIfNeeded(file);
+                  setForm((prev) => ({ ...prev, img_file: convertedFile }));
+                }}
               />
             </fieldset>
 

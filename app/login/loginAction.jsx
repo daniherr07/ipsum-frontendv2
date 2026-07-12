@@ -7,6 +7,7 @@ export async function loginAction(formData) {
   const cookieStore = await cookies();
   const email = formData.get("email");
   const password = formData.get("password");
+  const remember = formData.get("remember") === "on";
 
   const endpoint = process.env.BACKEND_URL + "/login";
 
@@ -45,7 +46,10 @@ export async function loginAction(formData) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 1 week
+      // "Recordar esta computadora": si se marca, la sesión dura 60 días;
+      // si no, es una cookie de sesión (sin maxAge) que se borra al cerrar
+      // el navegador — pensado para computadoras compartidas.
+      ...(remember ? { maxAge: 60 * 60 * 24 * 60 } : {}),
     },
   );
   return redirect("/protected/search");

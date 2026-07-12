@@ -285,6 +285,7 @@ export default function People({
 // (campanita) y por correo, con el proyecto y el remitente desglosados.
 function NotifyModal({ projectID, currentUserId, recipients, onClose, onDone }) {
   const [destinatarioId, setDestinatarioId] = useState(recipients[0]?.id || "");
+  const [asunto, setAsunto] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [sending, setSending] = useState(false);
 
@@ -294,6 +295,7 @@ function NotifyModal({ projectID, currentUserId, recipients, onClose, onDone }) 
       projectID,
       currentUserId,
       destinatarioId,
+      asunto,
       mensaje,
     );
     setSending(false);
@@ -322,6 +324,17 @@ function NotifyModal({ projectID, currentUserId, recipients, onClose, onDone }) 
           </fieldset>
 
           <fieldset className="fieldset">
+            <legend className="fieldset-legend">Asunto</legend>
+            <input
+              type="text"
+              className="input w-full"
+              value={asunto}
+              onChange={(e) => setAsunto(e.target.value)}
+              placeholder="¿Sobre qué es esta notificación?"
+            />
+          </fieldset>
+
+          <fieldset className="fieldset">
             <legend className="fieldset-legend">Mensaje</legend>
             <textarea
               className="textarea w-full"
@@ -345,7 +358,7 @@ function NotifyModal({ projectID, currentUserId, recipients, onClose, onDone }) 
               type="button"
               className="btn btn-primary"
               onClick={handleSubmit}
-              disabled={sending || !destinatarioId || !mensaje.trim()}
+              disabled={sending || !destinatarioId || !asunto.trim() || !mensaje.trim()}
             >
               {sending ? "Enviando..." : "Enviar"}
             </button>

@@ -125,3 +125,41 @@ body {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
 }
+
+/* Animaciones de hover globales: un poco de "vida" en los elementos
+   interactivos más comunes de la app. Sutiles a propósito (escala/elevación
+   pequeñas) para no estorbar la interacción ni marear al usuario. Se aplica
+   a .btn (cualquier botón daisyUI, en todo el sistema) en vez de repetirlo
+   componente por componente. */
+.btn {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.btn:hover:not(:disabled) {
+  transform: scale(1.03);
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* <summary> es el patrón de las tarjetas colapsables en toda la app
+   (familiares, usuarios, tablas de "Modificar", filas de proyectos en
+   "Buscar"). filter:brightness funciona igual en cualquier color de fondo,
+   así que sirve tanto en tema claro como oscuro sin tener que definirlo por
+   componente. */
+summary {
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+summary:hover {
+  filter: brightness(1.15);
+}
+
+/* Pasos de "Progreso del Proyecto" (cambio de etapa). */
+.step {
+  transition: filter 0.15s ease;
+}
+.step:hover {
+  filter: brightness(1.15);
+}
