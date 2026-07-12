@@ -1,0 +1,752 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+
+  .container {
+    width: 100vw;
+    height: 100vh;
+  }
+  
+  /* #region NAVBAR*/
+  .nav {
+    background-color: #00294a93;
+    color: #ffffff;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 550;
+    padding: 1em 2em;
+  }
+  
+  .navContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .navLogo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logoButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .logoImage {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .navLinks {
+    display: flex;
+  }
+  
+  .navLink {
+    margin-left: 3rem;
+    transition: color 0.2s;
+    color: rgba(255, 255, 255, 0.884);
+    font-weight: 500;
+    font-size: 1.2em;
+    text-decoration: none;
+    font-family: 'Fira Sans', sans-serif;
+  }
+  
+  .navLink:hover {
+    color: #60a5fa;
+  }
+  
+  .mobileMenuButton {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+  }
+  
+  .mobileMenu {
+    display: none;
+  }
+  
+  @media (max-width: 768px) {
+    .navLinks {
+      display: none;
+    }
+  
+    .mobileMenuButton {
+      display: block;
+    }
+  
+    .mobileMenu {
+      display: flex;
+      flex-direction: column;
+      padding: 1em 0;
+    }
+  
+    .mobileNavLink {
+      padding: 0.5em 0;
+      color: rgba(255, 255, 255, 0.884);
+      font-weight: 500;
+      font-size: 1.2em;
+      text-decoration: none;
+      font-family: 'Fira Sans', sans-serif;
+      transition: color 0.2s;
+    }
+  
+    .mobileNavLink:hover {
+      color: #60a5fa;
+    }
+  }
+    /* #endregion*/
+  
+
+    /* #region Header*/
+    .headerBonos {
+      width: 100%;
+      height: 50vh;
+      background: linear-gradient(180deg, #03579B 0%, #ffffff 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+    
+    .titleBonos {
+      color: white;
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 300;
+      text-align: center;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    
+    @media (max-width: 768px) {
+      .headerBonos {
+        height: 50vh;
+        padding: 1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .headerBonos {
+        height: 40vh;
+      }
+    }
+    
+    
+    /* #endregion*/
+
+    /* #region Informacion*/
+    .sectionBonos {
+      padding: 4rem 2rem;
+      background-color: #ffffff;
+    }
+    
+    .contentBonos {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    
+    .textContentBonos {
+      font-size: 1rem;
+      line-height: 1.4;
+      color: #03579B;
+      font-family: PT Sans, sans-serif;
+    }
+    
+    .textContentBonos p {
+      margin-bottom: 1.5rem;
+    }
+    
+    .highlightBonos {
+      color: #03579B;
+      font-weight: 600;
+    }
+    
+    .requirementsBonos {
+      list-style-type: disc;
+      margin: 1.5rem 0;
+      padding-left: 1.5rem;
+    }
+    
+    .requirementsBonos li {
+      margin-bottom: 0.75rem;
+    }
+    
+    .imageContainerBonos {
+      position: relative;
+      top: 50px;
+      width: 100%;
+      height: auto;
+      min-height: 400px;
+      display: flex;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    .imageBonos {
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 100%;
+      height: auto;
+    }
+    
+    @media (max-width: 968px) {
+      .contentBonos {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    
+      .imageContainerBonos {
+        min-height: 300px;
+        order: -1;
+        top: 0;
+        width: 100%;
+        padding: 0 20px;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .sectionBonos {
+        padding: 2rem 1rem;
+      }
+    
+      .textContentBonos {
+        font-size: 0.95rem;
+      }
+    
+      .imageContainerBonos {
+        min-height: 250px;
+        top: 0;
+        width: 100%;
+        padding: 0 15px;
+      }
+      
+      .imageBonos {
+        width: 100%;
+        max-width: 330px;
+        height: 200px;
+        object-fit: cover;
+      }
+    }
+    /* #endregion*/
+    
+    /* #region Servicios*/
+    .serviciosContenedor {
+      padding: 2rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .serviciosRejilla {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    /* Tablet and up */
+    @media (min-width: 768px) {
+      .serviciosRejilla {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    /* Desktop and up */
+    @media (min-width: 1024px) {
+      .serviciosRejilla {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    .serviciosTarjeta {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease;
+    }
+    
+    .serviciosTarjeta:hover {
+      transform: translateY(-4px);
+    }
+    
+    .serviciosEnvolturImagen {
+      position: relative;
+      width: 100%;
+      padding-top: 75%; /* 4:3 aspect ratio */
+    }
+    
+    .serviciosImagen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .serviciosContenido {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    
+    .serviciosTitulo {
+      color: #0066b3;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0 0 1rem 0;
+      min-height: 3rem;
+      line-height: 1.2;
+    }
+    
+    .serviciosDescripcion {
+      color: #333;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin: 0 0 1.5rem 0;
+      flex-grow: 1;
+    }
+    
+    .serviciosBoton {
+      background-color: #0066b3;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      width: 100%;
+    }
+    
+    .serviciosBoton:hover {
+      background-color: #004d86;
+    }
+    
+    @media (max-width: 767px) {
+      .serviciosContenedor {
+        padding: 0.5rem;
+      }
+      
+      .serviciosRejilla {
+        gap: 0.75rem;
+        grid-template-columns: minmax(auto, 280px);
+        justify-content: center;
+      }
+      
+      .serviciosTarjeta {
+        font-size: 0.8rem;
+        max-width: 280px;
+        margin: 0 auto;
+      }
+      
+      .serviciosEnvolturImagen {
+        padding-top: 50%; /* Further reduce image height */
+      }
+      
+      .serviciosContenido {
+        padding: 0.5rem 0.75rem;
+      }
+      
+      .serviciosTitulo {
+        font-size: 0.95rem;
+        margin-bottom: 0.3rem;
+        min-height: auto;
+      }
+      
+      .serviciosDescripcion {
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+      }
+      
+      .serviciosBoton {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+      }
+    }
+    
+    @media (max-width: 320px) {
+      .serviciosRejilla {
+        gap: 0.5rem;
+      }
+      
+      .serviciosTarjeta {
+        font-size: 0.7rem;
+      }
+      
+      .serviciosEnvolturImagen {
+        padding-top: 40%;
+      }
+      
+      .serviciosContenido {
+        padding: 0.4rem;
+      }
+      
+      .serviciosTitulo {
+        font-size: 0.8rem;
+        margin-bottom: 0.2rem;
+      }
+      
+      .serviciosDescripcion {
+        font-size: 0.7rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .serviciosBoton {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+      }
+    }
+    
+    .nav {
+      background-color: #00294a93;
+      color: #ffffff;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      padding: 1em 2em;
+    }
+    
+    .whatsappContainer {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      z-index: 1001;
+    }
+    
+    .mainContent {
+      padding-top: 80px; /* Adjust this value based on your navbar height */
+    }
+    
+    
+
+    
+    /* #endregion*/
+
+  /* #region Contacto*/
+  .contactSection {
+    background: linear-gradient(180deg, #ffffff 0%, #005293 100%);
+    padding: 4rem 2rem;
+    color: white;
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .containerFooter {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  .contactTitle {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: white;
+    font-family: Fira Sans, sans-serif;
+    font-weight: 300;
+  }
+  
+  .contactGrid {
+    display: grid;
+    gap: 4rem;
+    justify-items: center;
+  }
+  .contacts{
+    justify-items: center;
+  }
+  
+  .contactFormTitle,
+  .contactInfoTitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: white;
+    font-family: Fira Sans, sans-serif;
+    font-weight: 300;
+  }
+  
+  .contactForm {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .formInput {
+    padding: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background: transparent;
+    color: white;
+    font-size: 1rem;
+    font-family: PT Sans;
+  }
+  
+  .formInput::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .formInput[type="email"],
+  .formInput[type="number"],
+  .formTextarea {
+    grid-column: 1 / -1;
+  }
+  
+  .formTextarea {
+    padding: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background: transparent;
+    color: white;
+    font-size: 1rem;
+    resize: vertical;
+    font-family: PT Sans;
+  }
+  
+  .formTextarea::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .formSubmitButton {
+    grid-column: 1 / -1;
+    background: white;
+    color: #005293;
+    padding: 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .formSubmitButton:hover {
+    background: #f0f0f0;
+  }
+  .contactInfo{
+    align-content: center;
+  }
+  .contactInfoItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    color: white;
+    font-family: PT Sans;
+  }
+
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .contactGrid {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+  
+    .contactForm {
+      grid-template-columns: 1fr;
+    }
+  
+    .formInput {
+      grid-column: 1 / -1;
+    }
+  
+    .contactTitle {
+      font-size: 2rem;
+    }
+    .contactInfo{
+      justify-items: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .contactSection {
+      padding: 3rem 1rem;
+    }
+  
+    .contactTitle {
+      font-size: 1.75rem;
+    }
+  
+    .contactFormTitle,
+    .contactInfoTitle {
+      font-size: 1.25rem;
+    }
+    .contactInfo{
+      justify-items: center;
+    }
+  }
+
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .contactGrid {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+  
+    .contactForm {
+      grid-template-columns: 1fr;
+    }
+  
+    .formInput {
+      grid-column: 1 / -1;
+    }
+  
+    .contactTitle {
+      font-size: 2rem;
+    }
+    .contactInfo{
+      justify-items: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .contactSection {
+      padding: 3rem 1rem;
+    }
+  
+    .contactTitle {
+      font-size: 1.75rem;
+    }
+  
+    .contactFormTitle,
+    .contactInfoTitle {
+      font-size: 1.25rem;
+    }
+    .contactInfo{
+      justify-items: center;
+    }
+  }
+
+
+  
+  /* #region Whatsapp*/
+  .whatsappContainer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .whatsappButton {
+    background-color: #25D366;
+    color: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    padding: 14px;
+  }
+  
+  .whatsappIcon {
+    width: 100%;
+    height: 100%;
+    color: white;
+  }
+  
+  .whatsappText {
+    background-color: #25D366;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .animatedText {
+    animation: fadeInSlide 0.3s ease forwards;
+  }
+  
+  @keyframes fadeInSlide {
+    0% {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .whatsappContainer:hover .whatsappText {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .whatsappButton:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    background-color: #22c15e;
+  }
+  
+  @media (max-width: 768px) {
+    .whatsappButton {
+      width: 50px;
+      height: 50px;
+      padding: 12px;
+    }
+  
+    .whatsappText {
+      font-size: 12px;
+      padding: 8px 12px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .whatsappContainer {
+      bottom: 10px;
+      right: 10px;
+    }
+  
+    .whatsappButton {
+      width: 40px;
+      height: 40px;
+      padding: 10px;
+    }
+  
+    .whatsappText {
+      font-size: 10px;
+      padding: 6px 10px;
+      margin-right: 5px;
+    }
+  }
+  
+  
+  
+  
+  
+  /* #endregion */
+  

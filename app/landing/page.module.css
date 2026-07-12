@@ -1,0 +1,998 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+
+  .container {
+    width: 100vw;
+    height: 100vh;
+  }
+  
+  /* #region NAVBAR*/
+  .nav {
+    background-color: #00294a93;
+    color: #ffffff;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 550;
+    padding: 1em 2em;
+  }
+  
+  .navContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .navLogo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logoButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .logoImage {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .navLinks {
+    display: flex;
+  }
+  
+  .navLink {
+    margin-left: 3rem;
+    transition: color 0.2s;
+    color: rgba(255, 255, 255, 0.884);
+    font-weight: 500;
+    font-size: 1.2em;
+    text-decoration: none;
+    font-family: 'Fira Sans', sans-serif;
+  }
+  
+  .navLink:hover {
+    color: #60a5fa;
+  }
+  
+  .mobileMenuButton {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+  }
+  
+  .mobileMenu {
+    display: none;
+  }
+  
+  @media (max-width: 768px) {
+    .navLinks {
+      display: none;
+    }
+  
+    .mobileMenuButton {
+      display: block;
+    }
+  
+    .mobileMenu {
+      display: flex;
+      flex-direction: column;
+      padding: 1em 0;
+    }
+  
+    .mobileNavLink {
+      padding: 0.5em 0;
+      color: rgba(255, 255, 255, 0.884);
+      font-weight: 500;
+      font-size: 1.2em;
+      text-decoration: none;
+      font-family: 'Fira Sans', sans-serif;
+      transition: color 0.2s;
+    }
+  
+    .mobileNavLink:hover {
+      color: #60a5fa;
+    }
+  }
+    
+    /* #endregion*/
+  
+
+  /* #region HERO*/ 
+  .container {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .videoBack {
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    position: relative;
+  }
+  
+  .bgVideo {
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+    object-fit: cover;
+  }
+  
+  .heroContent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .heroLogo {
+    width: 80%;
+    max-width: 800px;
+    height: auto;
+    filter: drop-shadow(2px -1px 12px rgba(0, 0, 0, 0.54));
+  }
+  
+  .heroText {
+    color: #ffffff;
+    font-size: clamp(16px, 2vw, 24px);
+    text-wrap: balance;
+    padding: 2em 0;
+    line-height: 1.75rem;
+    width: 90%;
+    max-width: 800px;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 200;
+    text-align: center;
+  }
+  
+  .heroButton {
+    font-family: 'Fira Sans', sans-serif;
+    font-size: clamp(16px, 2vw, 20px);
+    padding: 15px 50px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(90deg, rgba(3,87,155,1) 18%, rgba(50,127,189,1) 81%);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .heroButton:hover {
+    box-shadow: 0 0 20px 3px rgba(255, 255, 255, 0.3);
+  }
+  
+  @media (max-width: 768px) {
+    .heroContent {
+      padding: 1em;
+    }
+  
+    .heroLogo {
+      width: 90%;
+    }
+  
+    .heroText {
+      width: 100%;
+      font-size: 16px;
+      padding: 1.5em 0;
+    }
+  
+    .heroButton {
+      padding: 12px 40px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .heroLogo {
+      width: 95%;
+    }
+  
+    .heroText {
+      font-size: 14px;
+      line-height: 1.5rem;
+    }
+  
+    .heroButton {
+      padding: 10px 30px;
+      font-size: 16px;
+    }
+  }
+  /* #endregion */
+
+
+  /* #region Nosotros, Mision y Vision*/
+  .section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    gap: 4rem;
+  }
+  
+  .content {
+    flex: 1;
+    max-width: 600px;
+    padding: 4rem 0;
+  }
+  
+  .title {
+    color: #03579B;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    font-family: Fira Sans, sans-serif;
+  }
+  
+  .description {
+    color: #4a4a4a;
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    line-height: 1.6;
+    margin: 0;
+    font-family: PT Sans, sans-serif;
+    text-wrap: balance;
+  }
+  
+  .imageWrapper {
+    position: relative;
+    width: 613px;
+    height: 512px;
+    flex-shrink: 0;
+  }
+  
+  .image {
+    object-fit:contain;
+  }
+  
+  @media (max-width: 1024px) {
+    .section {
+      flex-direction: column;
+      text-align: center;
+      gap: 2rem;
+      padding: 2rem;
+    }
+  
+    .content {
+      max-width: 100%;
+      padding: 2rem 0;
+    }
+  
+    .imageWrapper {
+      width: 100%;
+      max-width: 500px;
+      height: 400px;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .section {
+      padding: 1rem;
+    }
+  
+    .content {
+      padding: 1rem 0;
+    }
+  
+    .imageWrapper {
+      max-width: 300px;
+      height: 300px;
+      
+    }
+  }
+  /* #endregion */
+  
+
+  /* #region Seccion Proyectos */
+  .seccionProyectos {
+    padding: 2rem;
+    width: 65%;
+    margin: 0 auto;
+  }
+  
+  .tituloProyectos {
+    font-size: 3rem;
+    color: #03579B;
+    text-align: center;
+    font-weight: 400;
+    margin-bottom: 4rem;
+    font-family: Fira Sans, sans-serif;
+  }
+  
+  .galeriaProyectos {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    gap: 1rem;
+    width: 100%;
+    height: auto;
+  }
+  
+  .columnaIzquierdaProyectos {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .filaArribaProyectos {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .imagenPequenaProyectos {
+    width: 100%;
+    aspect-ratio: 1/1;
+  }
+  
+  .imagenMedianaProyectos {
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+  
+  .imagenGrandeProyectos {
+    width: 94.8%;
+    aspect-ratio: 3/4;
+  }
+  
+  .imageContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+  
+  .imagenProyectos {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .imageContainer:hover .overlay {
+    opacity: 1;
+  }
+  
+  .imageContainer:hover .imagenProyectos {
+    transform: scale(1.05);
+  }
+  
+  .projectTitle {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 500;
+    font-family: Fira Sans, sans-serif;
+  }
+  
+  /* Responsive Breakpoints */
+  @media (max-width: 1200px) {
+    .seccionProyectos {
+      padding: 1.5rem;
+      width: 100%;
+    }
+    
+    .galeriaProyectos {
+      gap: 0.75rem;
+    }
+    
+    .filaArribaProyectos {
+      gap: 0.75rem;
+    }
+    
+    .columnaIzquierdaProyectos {
+      gap: 0.75rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .seccionProyectos {
+      padding: 1rem;
+      width: 75%;
+      max-width: 95%;
+      
+    }
+  
+    .tituloProyectos {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+  
+    .galeriaProyectos {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  
+    .filaArribaProyectos {
+      gap: 0.5rem;
+    }
+  
+    .columnaIzquierdaProyectos {
+      gap: 0.5rem;
+    }
+  
+    .imagenGrandeProyectos {
+      aspect-ratio: 16/9;
+      width: 100%;
+      
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .seccionProyectos {
+      padding: 0.5rem;
+      max-width: 100%;
+      width: 75%;
+    }
+  
+    .tituloProyectos {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+  
+    .filaArribaProyectos {
+      grid-template-columns: 1fr;
+    }
+  
+    .imagenPequenaProyectos,
+    .imagenMedianaProyectos,
+    .imagenGrandeProyectos {
+      aspect-ratio: 4/3;
+    }
+    .imagenGrandeProyectos{
+      width: 100%;
+    }
+  }
+  /* #endregion */
+
+  /* #region Servicios */
+
+  .seccionServicios {
+    padding: 2rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .tituloServicios {
+    color: #03579B;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 4rem;
+    font-family: Fira Sans, sans-serif;
+    font-weight: 400;
+  }
+  
+  .listaServicios {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .itemServicio {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+  }
+  .parahover:hover .contenedorIcono{
+    transition: ease-in 0.3s;
+    background-color: #03579B;  
+    color: #fff;
+    cursor: pointer;
+
+  }
+  .parahover:hover .textoServicio{
+    transition: ease-in 0.3s;
+    background-color: #03579B;
+    color: #fff; 
+    cursor: pointer;
+  }
+  .parahover:hover img.icono{
+    transition: ease-in 0.3s;
+    filter: brightness(0) invert(1);
+  }
+  .itemServicioDerecha {
+    flex-direction: row-reverse;
+  }
+  .textoServicio a{
+    text-decoration: none;  
+  }
+  .textoServicio a:visited{
+    text-decoration: none; 
+    color: #333; 
+  }
+  .textoServicio a:hover{
+    transition: ease-in 0.3s;
+    text-decoration: none; 
+    color: #fff; 
+  }
+  .contenedorIcono {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    z-index: 1;
+    transition: ease-in 0.3s;
+  }
+  
+  .textoServicio {
+    background: white;
+    padding: 1rem 2rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 1.3rem;
+    color: #333;
+    flex-grow: 1;
+    position: relative;
+    font-family: PT Sans, sans-serif;
+    transition: ease-in 0.3s;
+  }
+  
+  .itemServicioDerecha .textoServicio {
+    text-align: right;
+  }
+  
+  .icono {
+    width: 32px;
+    height: 32px;
+    color: #0066cc;
+    transition: ease-in 0.3s;
+  }
+  
+  @media (max-width: 768px) {
+    .seccionServicios {
+      padding: 2rem 1rem;
+    }
+  
+    .tituloServicios {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+  
+    .itemServicio, .itemServicioDerecha {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .textoServicio, .itemServicioDerecha .textoServicio {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .linkServicio{
+      text-decoration: none;
+    }
+  }
+  
+  
+  
+  /* #endregion */
+
+  /* #region Filosofia*/
+  .seccionFilosofia {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 400px;
+    margin-top: 100px;
+    margin-bottom: 100px;
+  }
+  
+  .contenedorMision,
+  .contenedorVision {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .contenedorMision {
+    background-color: #03579B;
+    color: white;
+    -webkit-box-shadow: 0px 0px 138px -67px rgba(0,0,0,0.48);
+    -moz-box-shadow: 0px 0px 138px -67px rgba(0,0,0,0.48);
+    box-shadow: 0px 0px 138px -67px rgba(0,0,0,0.48);
+  }
+  
+  .contenedorVision {
+    background-color: white;
+    color: #333;
+    -webkit-box-shadow: 0px 0px 138px -67px rgba(0,0,0,0.48);
+    -moz-box-shadow: 0px 0px 138px -67px rgba(0,0,0,0.48);
+    box-shadow: 0px 0px 138px -67px rgba(0,0,0,0.48);
+  }
+  
+  .iconoMision,
+  .iconoVision {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .tituloMision,
+  .tituloVision {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    font-family: Fira Sans, sans-serif;
+
+  }
+  .tituloVision{
+    color: #03579B;
+  }
+  
+  .textoMision,
+  .textoVision {
+    max-width: 600px;
+    line-height: 1.6;
+    font-size: 1rem;
+    font-family: PT Sans, sans-serif;
+    text-wrap: balance;
+  }
+  .textoVision{
+    color: #03579B;
+  }
+  .objetivoContainer {
+    grid-column: 1 / -1;
+    padding: 2rem;
+    text-align: center;
+    background-color: #ffffff;
+
+  }
+  
+  .objetivoText {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #4dadfc;
+    font-family: Fira Sans, sans-serif;
+    font-weight: 600;
+    
+  }
+  
+  @media (max-width: 768px) {
+    .objetivoText {
+      font-size: 1rem;
+    }
+  }
+  @media (max-width: 768px) {
+    .seccionFilosofia {
+      grid-template-columns: 1fr;
+    }
+  
+    .contenedorMision,
+    .contenedorVision {
+      padding: 3rem 1.5rem;
+    }
+  
+    .tituloMision,
+    .tituloVision {
+      font-size: 1.75rem;
+    }
+  
+    .textoMision,
+    .textoVision {
+      font-size: 0.95rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .contenedorMision,
+    .contenedorVision {
+      padding: 2rem 1rem;
+    }
+  
+    .tituloMision,
+    .tituloVision {
+      font-size: 1.5rem;
+    }
+  }
+  
+  
+  /* #endregion */
+  /* #region Contacto*/
+  .contactSection {
+    background: linear-gradient(180deg, #ffffff 0%, #005293 100%);
+    padding: 4rem 2rem;
+    color: white;
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .containerFooter {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  .contactTitle {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: white;
+    font-family: Fira Sans, sans-serif;
+    font-weight: 300;
+  }
+  
+  .contactGrid {
+    display: grid;
+    gap: 4rem;
+    justify-items: center;
+  }
+  .contacts{
+    justify-items: center;
+  }
+  
+  .contactFormTitle,
+  .contactInfoTitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: white;
+    font-family: Fira Sans, sans-serif;
+    font-weight: 300;
+  }
+  
+  .contactForm {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .formInput {
+    padding: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background: transparent;
+    color: white;
+    font-size: 1rem;
+    font-family: PT Sans;
+  }
+  
+  .formInput::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .formInput[type="email"],
+  .formInput[type="number"],
+  .formTextarea {
+    grid-column: 1 / -1;
+  }
+  
+  .formTextarea {
+    padding: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background: transparent;
+    color: white;
+    font-size: 1rem;
+    resize: vertical;
+    font-family: PT Sans;
+  }
+  
+  .formTextarea::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .formSubmitButton {
+    grid-column: 1 / -1;
+    background: white;
+    color: #005293;
+    padding: 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .formSubmitButton:hover {
+    background: #f0f0f0;
+  }
+  .contactInfo{
+    align-content: center;
+  }
+  .contactInfoItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    color: white;
+    font-family: PT Sans;
+  }
+
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .contactGrid {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+  
+    .contactForm {
+      grid-template-columns: 1fr;
+    }
+  
+    .formInput {
+      grid-column: 1 / -1;
+    }
+  
+    .contactTitle {
+      font-size: 2rem;
+    }
+    .contactInfo{
+      justify-items: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .contactSection {
+      padding: 3rem 1rem;
+    }
+  
+    .contactTitle {
+      font-size: 1.75rem;
+    }
+  
+    .contactFormTitle,
+    .contactInfoTitle {
+      font-size: 1.25rem;
+    }
+    .contactInfo{
+      justify-items: center;
+    }
+  }
+
+
+  
+  /* #region Whatsapp*/
+  .whatsappContainer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .whatsappButton {
+    background-color: #25D366;
+    color: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    padding: 14px;
+  }
+  
+  .whatsappIcon {
+    width: 100%;
+    height: 100%;
+    color: white;
+  }
+  
+  .whatsappText {
+    background-color: #25D366;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .animatedText {
+    animation: fadeInSlide 0.3s ease forwards;
+  }
+  
+  @keyframes fadeInSlide {
+    0% {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .whatsappContainer:hover .whatsappText {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .whatsappButton:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    background-color: #22c15e;
+  }
+  
+  @media (max-width: 768px) {
+    .whatsappButton {
+      width: 50px;
+      height: 50px;
+      padding: 12px;
+    }
+  
+    .whatsappText {
+      font-size: 12px;
+      padding: 8px 12px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .whatsappContainer {
+      bottom: 10px;
+      right: 10px;
+    }
+  
+    .whatsappButton {
+      width: 40px;
+      height: 40px;
+      padding: 10px;
+    }
+  
+    .whatsappText {
+      font-size: 10px;
+      padding: 6px 10px;
+      margin-right: 5px;
+    }
+  }
+  
+  
+  
+  
+  
+  /* #endregion */
+  
