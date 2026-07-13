@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Search, Plus, CircleUserRound, UserPen, ArrowLeft, Pencil, History } from "lucide-react";
+import { Search, Plus, CircleUserRound, UserPen, ArrowLeft, History } from "lucide-react";
 import { modifyData } from "../../../const";
 import NewProjectModal from "./NewProjectModal";
 import NotificationsBell from "./NotificationsBell";
@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 import BackButton from "./BackButton";
 import UserMenu from "./UserMenu";
 import ThemeToggle from "./ThemeToggle";
+import MobileMenu from "./MobileMenu";
 import isAdmin from "../../isAdmin";
 import ModifyDesktopMenu from "./ModifyDesktopMenu";
 
@@ -23,99 +24,7 @@ export default async function NavBar() {
     <div className="navbar bg-base-300 shadow-sm px-2 xl:px-4 gap-2 lg:gap-4 overflow-visible">
       {/** Menu Dropdown Mobiles */}
       <div className="navbar-start lg:flex-1">
-        <div className="dropdown z-300">
-          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              {" "}
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h8m-8 6h16"
-              />{" "}
-            </svg>
-          </div>
-          <ul
-            tabIndex="-1"
-            className="
-            menu menu-sm dropdown-content bg-base-300 rounded-box z-1 mt-3 w-60 p-2 gap-2 shadow 
-            **:text-[16px]
-            "
-          >
-            <li className="bg-base-100">
-              <UserMenu
-                userName={userName}
-                className="flex flex-row items-center justify-start w-full"
-              >
-                <CircleUserRound size={40} />
-                <p>{userName}</p>
-              </UserMenu>
-            </li>
-            <li>
-              <Link
-                href={"/protected/search"}
-                className="flex flex-row items-center justify-start"
-              >
-                <Search size={20} />
-                <p>Buscar</p>
-              </Link>
-            </li>
-
-            {isUserAdmin && (
-              <>
-                <li>
-                  <Link
-                    href={"/protected/modify"}
-                    className="flex flex-row items-center justify-start"
-                  >
-                    <Pencil size={20} />
-                    <p>Modificar</p>
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    href={"/protected/users"}
-                    className="flex flex-row items-center justify-start"
-                  >
-                    <UserPen size={20} />
-                    <p>Usuarios</p>
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    href={"/protected/bitacora"}
-                    className="flex flex-row items-center justify-start"
-                  >
-                    <History size={20} />
-                    <p>Bitácora</p>
-                  </Link>
-                </li>
-              </>
-            )}
-
-            <li>
-              <BackButton className="flex flex-row items-center justify-start">
-                <ArrowLeft size={20} />
-                <p>Regresar</p>
-              </BackButton>
-            </li>
-
-            <li>
-              <ThemeToggle
-                className="flex flex-row items-center justify-start w-full"
-                showLabel
-              />
-            </li>
-          </ul>
-        </div>
+        <MobileMenu userName={userName} isUserAdmin={isUserAdmin} />
 
         {/* En escritorio: flecha para regresar + bloque de usuario (dale
             clic para cerrar sesión, con modal de confirmación de por medio) */}

@@ -1,11 +1,25 @@
 import Form from "next/form";
 import Link from "next/link";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import LoginButton from "./LoginButton";
 import { loginAction } from "./loginAction";
+import { getSessionUser } from "../protected/getSessionUser";
 import { CircleX } from "lucide-react";
 
 export default async function Login({ searchParams }) {
+  // Si ya hay una sesión activa, no mostrar el formulario de login otra
+  // vez. Sin esto, un usuario logueado que retrocede con el botón nativo
+  // del navegador (o el del celular) lo suficiente termina viendo esta
+  // pantalla en vez de quedarse donde estaba — el navegador simplemente
+  // vuelve a la página /login que sí visitó antes de iniciar sesión, y
+  // como esta página nunca revisaba si ya había sesión, la mostraba tal
+  // cual en vez de mandarlo de vuelta.
+  const user = await getSessionUser();
+  if (user) {
+    redirect("/protected/search");
+  }
+
   const query = await searchParams;
 
   return (
