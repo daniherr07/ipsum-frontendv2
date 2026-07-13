@@ -1,4 +1,5 @@
 import SearchFilters from "./SearchFilters";
+import ExitGuard from "./ExitGuard";
 import { cookies } from "next/headers";
 
 const endpoint = process.env.BACKEND_URL + "/allProjects";
@@ -111,6 +112,7 @@ export default async function Search() {
 
   return (
     <div className="w-full h-full">
+      <ExitGuard />
       <SearchFilters
         projects={projects}
         userData={userData}
