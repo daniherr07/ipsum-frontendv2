@@ -163,3 +163,18 @@ summary:hover {
 .step:hover {
   filter: brightness(1.15);
 }
+
+/* Bug de daisyUI 5 (no nuestro): su .collapse basado en <details> usa el
+   pseudo-elemento ::details-content, que siempre arranca en height:0 y solo
+   pasa a height:auto DENTRO de @media (prefers-reduced-motion: no-preference).
+   Si el usuario tiene los efectos de animación desactivados en Windows (o
+   cualquier preferencia de "reducir movimiento"), esa media query nunca
+   aplica y el contenido se queda pegado en height:0 para siempre — el
+   <details> sí abre (el atributo cambia) pero visualmente no se ve nada,
+   como si el clic no hiciera nada. Se repite la regla sin depender de esa
+   preferencia; no está dentro de @layer, así que le gana a la de daisyUI
+   sin importar el orden de sus capas internas. */
+.collapse:is(details)[open]::details-content {
+  height: auto;
+  overflow: visible;
+}
