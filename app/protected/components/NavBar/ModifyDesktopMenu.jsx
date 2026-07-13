@@ -9,6 +9,12 @@ export default function ModifyDesktopMenu({ items }) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    // pointerdown (no mousedown + touchstart por separado): en dispositivos
+    // híbridos (laptop con pantalla táctil) un mismo toque puede o no
+    // sintetizar un mousedown de forma confiable, y tener dos listeners
+    // separados escuchando el mismo gesto es justo el tipo de cosa que
+    // produce comportamiento intermitente ("a veces sí, a veces no").
+    // pointerdown unifica mouse/touch/lápiz en un solo evento.
     function handlePointerDown(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsOpen(false);
@@ -21,13 +27,11 @@ export default function ModifyDesktopMenu({ items }) {
       }
     }
 
-    document.addEventListener("mousedown", handlePointerDown);
-    document.addEventListener("touchstart", handlePointerDown);
+    document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("keydown", handleEscape);
 
     return () => {
-      document.removeEventListener("mousedown", handlePointerDown);
-      document.removeEventListener("touchstart", handlePointerDown);
+      document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("keydown", handleEscape);
     };
   }, []);

@@ -54,8 +54,11 @@ export default function NotificationsBell({ userId }) {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    // pointerdown (no solo mousedown): cubre mouse, touch y lápiz por igual,
+    // para que cerrar el panel funcione igual de bien en una laptop con
+    // pantalla táctil que con mouse.
+    document.addEventListener("pointerdown", handleClickOutside);
+    return () => document.removeEventListener("pointerdown", handleClickOutside);
   }, [open]);
 
   const handleClickNotification = async (notification) => {
