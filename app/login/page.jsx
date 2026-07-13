@@ -58,7 +58,7 @@ export default async function Login({ searchParams }) {
           <LoginButton />
         </Form>
 
-        <Link href={"/forgot"} className="text-info underline">
+        <Link href={"/forgot"} className="text-primary underline">
           ¿Olvidó su contraseña?
         </Link>
 

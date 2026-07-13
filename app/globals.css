@@ -23,12 +23,16 @@
   --color-secondary: #8e0396;
   --color-secondary-content: #f89bfd;
 
-  --success: #039603;
-  --warning: #969603;
-  --error: #960303;
-  --success-content: #9bfd9b;
-  --warning-content: #000000;
-  --error-content: #fd9b9b;
+  /* Antes decía --success/--warning/--error (sin el prefijo "color-"): esa
+     no es una propiedad que daisyUI reconozca, así que estos colores nunca
+     se aplicaban y la app usaba el rojo/amarillo/verde por defecto de
+     daisyUI sin que nadie lo notara. */
+  --color-success: #039603;
+  --color-warning: #969603;
+  --color-error: #960303;
+  --color-success-content: #9bfd9b;
+  --color-warning-content: #000000;
+  --color-error-content: #fd9b9b;
 }
 
 @plugin "daisyui/theme" {
@@ -53,12 +57,30 @@
   --color-secondary: #8e0396;
   --color-secondary-content: #f89bfd;
 
-  --success: #039603;
-  --warning: #969603;
-  --error: #960303;
-  --success-content: #9bfd9b;
-  --warning-content: #000000;
-  --error-content: #fd9b9b;
+  /* Mismo bug de prefijo que en el tema oscuro (ver comentario arriba). */
+  --color-success: #039603;
+  --color-warning: #969603;
+  --color-error: #960303;
+  --color-success-content: #9bfd9b;
+  --color-warning-content: #000000;
+  --color-error-content: #fd9b9b;
+
+  /* Antes no se personalizaban: daisyUI usaba su gris por defecto
+     (100%/98%/95% de luminosidad), una diferencia de 2-3% casi imperceptible
+     entre tarjetas/fondos apilados. Este set usa pasos más grandes (blanco /
+     gris azulado claro / gris azulado medio) para que se note la diferencia
+     entre contenedores, con un tinte sutil hacia el azul de marca en vez de
+     gris puro.
+     Además, daisyUI usaba su "info" propio (celeste genérico) sin
+     personalizar, que convivía con el azul de marca (--color-primary) y se
+     veían como dos azules distintos — se empareja con el mismo azul. */
+  --color-base-100: #ffffff;
+  --color-base-200: #eef2f6;
+  --color-base-300: #dbe2e8;
+  --color-base-content: #16232e;
+
+  --color-info: #035496;
+  --color-info-content: #e6f3fe;
 }
 
 /*Configuración para que tailwind lo detecte*/
