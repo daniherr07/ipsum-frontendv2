@@ -120,7 +120,10 @@ export default function UsersClient({ usersData }) {
             <summary className="collapse-title  font-semibold text-start">
               {usuario.nombre} {usuario.apellido1}
               {" - "}{" "}
-              <span className="text-primary-content/70">
+              {/* text-base-content (no text-primary-content: ese color es
+                  para texto encima de un fondo bg-primary, no del fondo
+                  base normal de esta fila — se veía casi invisible). */}
+              <span className="text-base-content/60">
                 {usersData.roles.find((rol) => rol.id == usuario.rol_id).nombre}
               </span>
             </summary>

@@ -639,7 +639,11 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
           <div className="flex flex-wrap lg:flex-nowrap items-center gap-x-4 gap-y-1">
             <span className="flex-1 min-w-[160px]">
               {project.nombre + " "}
-              <span className="text-primary-content/70">
+              {/* text-base-content (no text-primary-content, que es para
+                  texto ENCIMA de un fondo bg-primary): esta fila usa el
+                  fondo base normal, y primary-content ahí se veía casi
+                  invisible (un azul clarito sobre blanco). */}
+              <span className="text-base-content/60">
                 - {project.bono || "Bono sin definir"}
               </span>
             </span>
@@ -648,7 +652,7 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
                 resumen simple de siempre (nombre + bono). Los anchos (w-56,
                 w-36, w-24) coinciden con el encabezado de la lista. */}
             <span className="hidden lg:flex w-56 shrink-0">
-              <span className="badge badge-ghost max-w-full truncate">
+              <span className="badge badge-primary badge-outline max-w-full truncate">
                 {etapaActual?.nombre || "Sin etapa"}
               </span>
             </span>
@@ -723,30 +727,35 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
                   timeZone: "America/Costa_Rica",
                 })}
                 sub="Fecha de creación"
+                color="secondary"
               />
 
               <InfoStat
                 icon={<Landmark size={32} />}
                 main={project.bono || "Bono sin definir"}
                 sub={project.variante_bono || "Variante sin definir"}
+                color="warning"
               />
 
               <InfoStat
                 icon={<FlagTriangleRight size={32} />}
                 main={etapaActual?.nombre || "Sin etapa"}
                 sub="Etapa del proyecto"
+                color="primary"
               />
 
               <InfoStat
                 icon={<MapPin size={32} />}
                 main={`${project.provincia || "Sin provincia"}, ${project.canton || "Sin cantón"}, ${project.distrito || "Sin distrito"}`}
                 sub="Ubicación"
+                color="success"
               />
 
               <InfoStat
                 icon={<Boxes size={32} />}
                 main={project.grupo || "Grupo sin definir"}
                 sub="Grupo del proyecto"
+                color="accent"
               />
 
               <div className="lg:col-span-3 flex flex-col gap-2">
@@ -1068,13 +1077,30 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
   );
 }
 
+// Clases completas (no interpoladas) para que Tailwind las detecte: un
+// string armado en runtime como `text-${color}` no lo escanea el JIT.
+const INFO_STAT_COLORS = {
+  primary: { icon: "text-primary", border: "border-primary" },
+  secondary: { icon: "text-secondary", border: "border-secondary" },
+  accent: { icon: "text-accent", border: "border-accent" },
+  success: { icon: "text-success", border: "border-success" },
+  warning: { icon: "text-warning", border: "border-warning" },
+};
+
 // Celda de dato individual del tab "Info." (icono + valor + subtítulo).
 // Se usa dentro de un grid para que, en escritorio, varios datos queden
-// acomodados lado a lado en vez de una sola columna vertical larga.
-function InfoStat({ icon, main, sub }) {
+// acomodados lado a lado en vez de una sola columna vertical larga. Antes
+// todas las tarjetas eran del mismo gris (icono a opacity-30) y costaba
+// distinguir un dato de otro de un vistazo; cada una ahora tiene su propio
+// color (ver los usos de InfoStat más abajo).
+function InfoStat({ icon, main, sub, color = "primary" }) {
+  const colors = INFO_STAT_COLORS[color] || INFO_STAT_COLORS.primary;
+
   return (
-    <div className="flex items-center gap-3 bg-base-100 rounded-box p-3 min-w-0">
-      <div className="opacity-30 shrink-0">{icon}</div>
+    <div
+      className={`flex items-center gap-3 bg-base-100 rounded-box p-3 min-w-0 border-l-4 ${colors.border}`}
+    >
+      <div className={`shrink-0 ${colors.icon}`}>{icon}</div>
       <div className="min-w-0">
         <div className="truncate">{main}</div>
         {sub && (
