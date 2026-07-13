@@ -26,9 +26,23 @@ export default function ThemeToggle({ className, showLabel = false }) {
     }
 
     if (!current) {
-      current = document.documentElement.getAttribute("data-theme") || "light";
+      // Sin preferencia guardada, el tema "dark" tiene prefersdark:true en
+      // daisyUI: la página se ve oscura por CSS (@media prefers-color-scheme)
+      // sin que <html> tenga nunca un atributo data-theme explícito. Antes
+      // esto se detectaba leyendo document.documentElement.getAttribute
+      // ("data-theme"), que en este caso SIEMPRE da null y caía al "light"
+      // por defecto — el estado interno decía "claro" mientras la página se
+      // veía oscura. El primer clic solo corregía ese desajuste (sin cambiar
+      // nada visualmente); recién el segundo clic aplicaba el cambio real.
+      current = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
     }
 
+    // Deja el atributo explícito desde el arranque para que el estado de
+    // React y el del DOM nunca se desincronicen, sin depender de que el
+    // usuario haga clic primero.
+    document.documentElement.setAttribute("data-theme", current);
     setTheme(current);
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
