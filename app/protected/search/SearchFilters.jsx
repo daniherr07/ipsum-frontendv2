@@ -459,7 +459,6 @@ function FilterPanel({
       {searchFilters.map((filter, index) => (
         <details
           className="collapse collapse-arrow"
-          name={`filters-${index}`}
           key={index}
         >
           <summary className="collapse-title font-semibold">
@@ -499,7 +498,7 @@ function FilterPanel({
       ))}
       <div className="divider"></div>
 
-      <details className="collapse collapse-arrow" name="filters-descartados">
+      <details className="collapse collapse-arrow">
         <summary className="collapse-title font-semibold">
           Descartados
         </summary>
@@ -624,7 +623,6 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
     <>
       <details
         className="collapse collapse-arrow bg-base-200 border border-base-300 shadow-lg relative z-1"
-        name={`project-${projectKey}`}
         open={isOpen}
       >
         <summary
@@ -658,7 +656,9 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
               {project.provincia || "Sin provincia"}
             </span>
             <span className="hidden lg:block text-sm opacity-70 w-24 shrink-0">
-              {new Date(project.created_at).toLocaleDateString("es-CR")}
+              {new Date(project.created_at).toLocaleDateString("es-CR", {
+                timeZone: "America/Costa_Rica",
+              })}
             </span>
 
             {/* Móvil: badge normal, puede caer a su propia línea (flex-wrap
@@ -719,7 +719,9 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
 
               <InfoStat
                 icon={<Calendar size={32} />}
-                main={new Date(project.created_at).toLocaleDateString("es-CR")}
+                main={new Date(project.created_at).toLocaleDateString("es-CR", {
+                  timeZone: "America/Costa_Rica",
+                })}
                 sub="Fecha de creación"
               />
 

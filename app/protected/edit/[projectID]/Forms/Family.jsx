@@ -139,7 +139,6 @@ export default function Family({ familyForm, projectID, projectSlug }) {
         familyData.map((member) => (
           <details
             className="collapse collapse-arrow bg-base-200 border border-base-300"
-            name={member.id}
             key={member.db_id}
           >
             <summary className="collapse-title font-semibold">

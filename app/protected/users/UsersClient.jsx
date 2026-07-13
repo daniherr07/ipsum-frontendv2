@@ -116,7 +116,6 @@ export default function UsersClient({ usersData }) {
           <details
             key={usuario.id}
             className="collapse bg-base-200 border border-base-300 collapse-arrow"
-            name={usuario.id}
           >
             <summary className="collapse-title  font-semibold text-start">
               {usuario.nombre} {usuario.apellido1}

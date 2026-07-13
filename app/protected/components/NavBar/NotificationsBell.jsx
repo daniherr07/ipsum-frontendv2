@@ -13,11 +13,15 @@ import {
 } from "./notificationsActions";
 
 function formatDate(value) {
+  // timeZone explícito: sin esto, el servidor (Vercel, otra zona horaria) y
+  // el navegador (Costa Rica) pueden formatear la misma fecha distinto,
+  // causando un mismatch de hidratación (React error #418).
   return new Date(value).toLocaleString("es-CR", {
     day: "2-digit",
     month: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "America/Costa_Rica",
   });
 }
 

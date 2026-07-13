@@ -167,7 +167,6 @@ function GenericUpdate({ genericData, loading, localTable, entidades, bonos, rel
             genericData.map((data) => (
               <details
                 className="collapse collapse-arrow bg-base-200 border border-base-300 shadow-lg relative z-1 w-full"
-                name="my-accordion-det-1"
                 key={data.id}
               >
                 <summary className="collapse-title font-semibold">

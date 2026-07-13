@@ -10,12 +10,18 @@ const TIPO_LABELS = {
 };
 
 function formatDate(value) {
+  // timeZone explícito: esta lista se llena con datos reales desde el
+  // servidor (no después de montar), así que sin esto el HTML del servidor
+  // (Vercel, otra zona horaria) y el primer render del navegador (Costa
+  // Rica) formatean la misma fecha distinto — mismatch de hidratación
+  // (React error #418).
   return new Date(value).toLocaleString("es-CR", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "America/Costa_Rica",
   });
 }
 
