@@ -11,16 +11,31 @@ export async function loginAction(formData) {
 
   const endpoint = process.env.BACKEND_URL + "/login";
 
+  // DEBUG temporal: confirma qué URL exacta se está llamando (¿BACKEND_URL
+  // llegó bien al runtime de Vercel?) y si el fetch truena a nivel de red
+  // (DNS/CORS/timeout) antes de siquiera llegar al backend.
+  console.log("[loginAction] BACKEND_URL =", process.env.BACKEND_URL);
+  console.log("[loginAction] endpoint =", endpoint);
+
   const userData = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, password }),
-  }).catch(() => null);
+  }).catch((error) => {
+    console.error("[loginAction] fetch falló a nivel de red:", error);
+    return null;
+  });
+
+  console.log(
+    "[loginAction] respuesta recibida:",
+    userData ? `status ${userData.status}` : "null (fetch nunca respondió)",
+  );
 
   if (!userData || !userData.ok) {
     const errorBody = userData ? await userData.json().catch(() => null) : null;
+    console.log("[loginAction] cuerpo del error:", errorBody);
     redirect(
       "/login?error=true&msg=" +
         encodeURIComponent(errorBody?.msg || "Usuario o contraseña incorrectos"),
@@ -28,6 +43,7 @@ export async function loginAction(formData) {
   }
 
   const data = await userData.json();
+  console.log("[loginAction] login exitoso para id:", data.id);
 
   // estado = 0 (usuario nuevo o que acaba de resetear su contraseña): no se
   // le deja entrar todavía, primero tiene que ponerse una contraseña propia.
