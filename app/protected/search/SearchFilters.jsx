@@ -133,10 +133,20 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
 
   useEffect(() => {
     if (!restored) return;
-    sessionStorage.setItem(
-      SEARCH_STATE_KEY,
-      JSON.stringify({ search, activeFilters, showDiscarded }),
-    );
+    try {
+      sessionStorage.setItem(
+        SEARCH_STATE_KEY,
+        JSON.stringify({ search, activeFilters, showDiscarded }),
+      );
+    } catch {
+      // Algunos navegadores (modo privado de Safari/iOS, políticas
+      // corporativas, extensiones de privacidad) bloquean sessionStorage y
+      // esto lanza una excepción. Sin el try/catch, ese throw ocurría dentro
+      // de un useEffect apenas se cargaba la página y dejaba toda la
+      // sección de búsqueda (resumen de proyecto, filtros) sin responder
+      // para esos usuarios — perder la persistencia entre visitas no es
+      // grave, pero romper la página sí.
+    }
   }, [restored, search, activeFilters, showDiscarded]);
 
   const activeFilterCount =

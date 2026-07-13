@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { Search, Plus, CircleUserRound, UserPen, X, Pencil, History } from "lucide-react";
-import Form from "next/form";
+import { Search, Plus, CircleUserRound, UserPen, ArrowLeft, Pencil, History } from "lucide-react";
 import { modifyData } from "../../../const";
 import NewProjectModal from "./NewProjectModal";
 import NotificationsBell from "./NotificationsBell";
 import { cookies } from "next/headers";
-import { logOffAction } from "./logOffAction";
+import BackButton from "./BackButton";
+import UserMenu from "./UserMenu";
+import ThemeToggle from "./ThemeToggle";
 import isAdmin from "../../isAdmin";
 import ModifyDesktopMenu from "./ModifyDesktopMenu";
 
@@ -47,9 +48,14 @@ export default async function NavBar() {
             **:text-[16px]
             "
           >
-            <li className="bg-base-100 flex flex-row items-center justify-start">
-              <CircleUserRound size={40} />
-              <p>{userName}</p>
+            <li className="bg-base-100">
+              <UserMenu
+                userName={userName}
+                className="flex flex-row items-center justify-start w-full"
+              >
+                <CircleUserRound size={40} />
+                <p>{userName}</p>
+              </UserMenu>
             </li>
             <li>
               <Link
@@ -96,31 +102,31 @@ export default async function NavBar() {
             )}
 
             <li>
-              <Form action={logOffAction} className="text-error">
-                <button type="submit" className="btn btn-error btn-soft">
-                  Cerrar Sesión
-                </button>
-              </Form>
+              <BackButton className="flex flex-row items-center justify-start">
+                <ArrowLeft size={20} />
+                <p>Regresar</p>
+              </BackButton>
+            </li>
+
+            <li>
+              <ThemeToggle
+                className="flex flex-row items-center justify-start w-full"
+                showLabel
+              />
             </li>
           </ul>
         </div>
 
-        {/* En escritorio el cierre de sesión queda junto al bloque de usuario para acceso rápido */}
+        {/* En escritorio: flecha para regresar + bloque de usuario (dale
+            clic para cerrar sesión, con modal de confirmación de por medio) */}
         <div className="items-center justify-center bg-base-100 p-2 rounded shadow-sm hidden lg:flex gap-2">
-          <Form action={logOffAction}>
-            <button
-              type="submit"
-              className="btn btn-error btn-square btn-sm text-white"
-              aria-label="Cerrar sesión"
-              title="Cerrar sesión"
-            >
-              <X size={16} color="white" />
-            </button>
-          </Form>
-          <div className="flex items-center gap-2">
+          <BackButton className="btn btn-ghost btn-square btn-sm">
+            <ArrowLeft size={16} />
+          </BackButton>
+          <UserMenu userName={userName} className="flex items-center gap-2">
             <CircleUserRound size={30} />
             <p>{userName}</p>
-          </div>
+          </UserMenu>
         </div>
       </div>
 
@@ -167,6 +173,8 @@ export default async function NavBar() {
 
       {/** Botón a la derecha */}
       <div className="navbar-end flex-none ml-auto flex items-center gap-2 lg:gap-3 lg:flex-1 lg:justify-end">
+        <ThemeToggle className="btn btn-ghost btn-circle" />
+
         <NotificationsBell userId={userData.id} />
 
         <label htmlFor="newProjectModal" className="btn btn-primary">
