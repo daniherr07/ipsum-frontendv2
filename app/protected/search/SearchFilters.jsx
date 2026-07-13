@@ -651,8 +651,13 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
             {/* Columnas visibles solo en escritorio: en móvil se mantiene el
                 resumen simple de siempre (nombre + bono). Los anchos (w-56,
                 w-36, w-24) coinciden con el encabezado de la lista. */}
-            <span className="hidden lg:flex w-56 shrink-0">
-              <span className="badge badge-primary badge-outline max-w-full truncate">
+            <span className="hidden lg:flex w-56 shrink-0 items-center">
+              {/* h-auto + whitespace-normal: los badges de daisyUI son de
+                  una sola línea con truncate por defecto (nombres de etapa
+                  largos quedaban cortados a la mitad, ej. "...so al BANHVI
+                  (Registrado por Ent"). Ahora el texto puede partirse en dos
+                  líneas dentro del mismo ancho de columna. */}
+              <span className="badge badge-primary badge-outline max-w-full h-auto whitespace-normal text-center leading-tight py-1">
                 {etapaActual?.nombre || "Sin etapa"}
               </span>
             </span>
