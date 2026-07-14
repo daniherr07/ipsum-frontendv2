@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 
-export async function newProjectAction(formData) {
+export async function newProjectAction(formData, creatorUserId) {
   const projectName = formData.get("projectName");
 
   const endpoint = process.env.BACKEND_URL + "/new";
@@ -12,7 +12,7 @@ export async function newProjectAction(formData) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ projectName: projectName }),
+    body: JSON.stringify({ projectName: projectName, creatorUserId }),
   }).catch(() => null);
 
   if (!projectData || !projectData.ok) {

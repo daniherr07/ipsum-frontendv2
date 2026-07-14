@@ -11,7 +11,7 @@ import StatusModal from "../StatusModal";
 // fallaba (ej. backend caído) — el usuario veía el modal cerrarse creyendo
 // que el proyecto se había creado. Ahora solo se cierra si la acción hace
 // redirect() (éxito); si falla, se queda abierto y muestra el error.
-export default function NewProjectModal() {
+export default function NewProjectModal({ currentUserId }) {
   const checkboxRef = useRef(null);
   const [status, setStatus] = useState(null);
 
@@ -30,7 +30,7 @@ export default function NewProjectModal() {
           <Form
             className="flex flex-col gap-5 w-full"
             action={async (formData) => {
-              const result = await newProjectAction(formData);
+              const result = await newProjectAction(formData, currentUserId);
               // Si newProjectAction tiene éxito, hace redirect() y esta
               // línea nunca se alcanza (redirect corta la ejecución). Solo
               // se llega acá cuando devuelve {ok:false, message}.

@@ -1,6 +1,6 @@
 "use server";
 
-export async function stageAction(projectID, etapa_id) {
+export async function stageAction(projectID, etapa_id, remitente_usuario_id) {
   const endpoint = process.env.BACKEND_URL + "/changeStage";
 
   const res = await fetch(endpoint, {
@@ -8,7 +8,7 @@ export async function stageAction(projectID, etapa_id) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ projectID, etapa_id }),
+    body: JSON.stringify({ projectID, etapa_id, remitente_usuario_id }),
   }).catch(() => null);
 
   if (!res || !res.ok) {

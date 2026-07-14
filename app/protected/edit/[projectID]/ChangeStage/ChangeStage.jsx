@@ -9,6 +9,7 @@ export default function ChangeStage({
   currentEtapaId,
   etapas,
   stageNotificationRoles,
+  currentUserId,
 }) {
   const router = useRouter();
   // Solo se usa para mostrar el modal cuando el cambio de etapa falla; si
@@ -27,7 +28,7 @@ export default function ChangeStage({
 
   const handleConfirm = async () => {
     setConfirming(true);
-    const result = await stageAction(projectID, pendingEtapa.id);
+    const result = await stageAction(projectID, pendingEtapa.id, currentUserId);
     setConfirming(false);
     setPendingEtapa(null);
 

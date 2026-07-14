@@ -137,6 +137,7 @@ export default function Form({
             currentEtapaId={data.stagesData.etapa_id}
             etapas={etapas}
             stageNotificationRoles={stageNotificationRoles}
+            currentUserId={currentUserId}
           />
         )}
       </div>

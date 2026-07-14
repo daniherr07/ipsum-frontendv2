@@ -92,7 +92,7 @@ export default async function NavBar() {
         </label>
 
         {/* Put this part before </body> tag */}
-        <NewProjectModal />
+        <NewProjectModal currentUserId={userData.id} />
       </div>
     </div>
   );
