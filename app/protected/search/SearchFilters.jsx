@@ -25,6 +25,7 @@ import getImages from "./getImages";
 import { convertHeicToPngIfNeeded } from "../lib/convertHeicToPng";
 import Image from "next/image";
 import StatusModal from "../components/StatusModal";
+import isAdmin from "../isAdmin";
 
 // Guarda búsqueda/filtros en sessionStorage para que sigan ahí al volver a
 // esta página (ej. después de entrar a un proyecto y regresar), sin
@@ -154,15 +155,6 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
     (showDiscarded ? 1 : 0) +
     (search ? 1 : 0);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    const value = formData.get("search");
-
-    setSearch(value);
-  };
-
   const handleClearAll = () => {
     setSearch("");
     setActiveFilters({});
@@ -186,11 +178,19 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
     });
   };
 
+  // Un analista/arquitecto/ingeniero (no-admin) solo debe ver, en este
+  // listado, los proyectos donde aparece asignado como encargado. Los admins
+  // (Root, Admin, y las variantes "* Admin" de cada rol, ver isAdmin.js) ven
+  // todos los proyectos sin restricción.
+  const userIsAdmin = isAdmin(userData?.rol_id);
+
   const visibleProjects = useMemo(() => {
     if (!projects) return [];
 
+    const term = search.trim().toLowerCase();
+
     const filtered = projects.filter((project) => {
-      if (search && !project.nombre.toLowerCase().includes(search.toLowerCase())) {
+      if (term && !project.nombre.toLowerCase().includes(term)) {
         return false;
       }
 
@@ -203,11 +203,36 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
         return false;
       }
 
+      if (!userIsAdmin) {
+        const isAssignedToUser =
+          String(project.analista_id) === String(userData?.id) ||
+          String(project.arquitecto_id) === String(userData?.id) ||
+          String(project.ingeniero_id) === String(userData?.id);
+        if (!isAssignedToUser) return false;
+      }
+
       return matchesAllFilters(project, activeFilters);
     });
 
-    return sortProjects(filtered, sortBy);
-  }, [projects, search, showDiscarded, activeFilters, sortBy]);
+    const sorted = sortProjects(filtered, sortBy);
+
+    if (!term) return sorted;
+
+    // Con una búsqueda activa, los proyectos cuyo nombre EMPIEZA con el
+    // término buscado son el resultado más relevante y van primero; el
+    // resto (que solo lo tiene en alguna otra parte del nombre) va después.
+    // Dentro de cada grupo se respeta el orden elegido en "Ordenar por".
+    const startsWith = [];
+    const containsOnly = [];
+    for (const project of sorted) {
+      if (project.nombre.toLowerCase().startsWith(term)) {
+        startsWith.push(project);
+      } else {
+        containsOnly.push(project);
+      }
+    }
+    return [...startsWith, ...containsOnly];
+  }, [projects, search, showDiscarded, activeFilters, sortBy, userIsAdmin, userData]);
 
   return (
     <div className="w-full h-fit p-4">
@@ -234,18 +259,19 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
         </aside>
 
         <section className="w-full lg:flex-1 min-w-0 pb-24 lg:pb-0">
-          {/* Input de búsqueda: visible siempre en escritorio; en móvil se
-              reemplaza por el botón de abajo para no saturar la pantalla. */}
-          {/* key={search}: fuerza a recrear el input (no controlado) cuando
-              search cambia por fuera de un submit normal (restaurado de
-              sessionStorage al montar, o vaciado por "Limpiar filtros"),
-              para que el texto mostrado no se desincronice del estado. */}
-          <Form key={search} onSubmit={handleSubmit} className="hidden lg:block w-full mb-4">
-            <SearchInput defaultValue={search} />
-          </Form>
+          {/* Input de búsqueda: visible siempre, también en móvil (antes vivía
+              escondido detrás del botón "Buscar y filtrar" de abajo, lo que
+              obligaba a abrir un popup para escribir). Va arriba del todo de
+              esta sección para que sea lo primero que se vea al entrar.
+              Controlado directamente por "search": filtra en cada tecla en
+              vez de esperar a que se envíe un form. */}
+          <div className="w-full mb-4">
+            <SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
+          </div>
 
-          {/* Botón solo-móvil que abre buscar + filtros en un popup. Fijo
-              abajo (no arriba: el NavBar no es sticky/fixed, así que un
+          {/* Botón solo-móvil que abre los filtros (orden, bono, etapa, etc.)
+              en un popup; la búsqueda por nombre ya no vive aquí, ver arriba.
+              Fijo abajo (no arriba: el NavBar no es sticky/fixed, así que un
               botón fijo arriba quedaría tapando/tapado por él al hacer
               scroll). pb-24 en la sección de arriba evita que tape la
               última tarjeta de la lista. */}
@@ -261,9 +287,8 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
               className="btn btn-outline w-full shadow-lg bg-base-100"
               onClick={() => setMobilePanelOpen(true)}
             >
-              <Search size={18} />
               <SlidersHorizontal size={18} />
-              Buscar y filtrar
+              Filtros
               {activeFilterCount > 0 && (
                 <span className="badge badge-primary badge-sm ml-auto">
                   {activeFilterCount}
@@ -321,7 +346,9 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
 
             {visibleProjects.length === 0 && (
               <p className="text-center opacity-60 py-10">
-                Ningún proyecto coincide con la búsqueda o los filtros.
+                {search.trim()
+                  ? `No se encontraron proyectos que coincidan con "${search.trim()}".`
+                  : "Ningún proyecto coincide con los filtros seleccionados."}
               </p>
             )}
           </div>
@@ -335,7 +362,7 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
         <div className="modal modal-open lg:hidden" role="dialog">
           <div className="modal-box max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-bold">Buscar y filtrar</h3>
+              <h3 className="text-lg font-bold">Filtrar</h3>
               <button
                 type="button"
                 className="btn btn-sm btn-circle btn-ghost"
@@ -345,17 +372,6 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
                 <X size={16} />
               </button>
             </div>
-
-            <Form
-              key={search}
-              onSubmit={(e) => {
-                handleSubmit(e);
-                setMobilePanelOpen(false);
-              }}
-              className="w-full mb-4"
-            >
-              <SearchInput defaultValue={search} />
-            </Form>
 
             <FilterPanel
               sortBy={sortBy}
@@ -385,9 +401,11 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
   );
 }
 
-// Input de búsqueda por nombre; se reutiliza tanto en el form fijo de
-// escritorio como dentro del popup de móvil.
-function SearchInput({ defaultValue }) {
+// Input de búsqueda por nombre; se reutiliza tanto en el bloque fijo de
+// escritorio como dentro del popup de móvil. Controlado (value/onChange en
+// vez de defaultValue + submit): filtra en cada tecla que escribe el
+// usuario, sin esperar a que le dé clic al botón.
+function SearchInput({ value, onChange }) {
   return (
     <div className="join w-full">
       <label className="input join-item w-full">
@@ -395,14 +413,15 @@ function SearchInput({ defaultValue }) {
           type="text"
           name="search"
           placeholder="Buscar por nombre"
-          defaultValue={defaultValue}
+          value={value}
+          onChange={onChange}
           className="w-full"
         />
       </label>
 
-      <button type="submit" className="btn btn-primary join-item">
+      <span className="btn btn-primary join-item pointer-events-none">
         <Search size={20} />
-      </button>
+      </span>
     </div>
   );
 }
@@ -524,10 +543,16 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
   const router = useRouter();
   const [tab, setTab] = useState(0);
   const [notes, setNotes] = useState();
-  const [loading, setLoading] = useState(false);
+  const [notesLoading, setNotesLoading] = useState(false);
   const [reload, setReload] = useState(true);
 
   const [images, setImages] = useState();
+  const [imagesLoading, setImagesLoading] = useState(false);
+  // Recuerda para qué proyecto/reload ya se pidieron las imágenes, para no
+  // volver a pedirlas de la API cada vez que se cierra y se vuelve a abrir
+  // la misma tarjeta (solo cambia cuando de verdad hay que refrescar: otro
+  // proyecto, o una subida/borrado que cambia "reload").
+  const imagesCacheRef = useRef({ id: null, reload: null });
   const [status, setStatus] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
@@ -592,10 +617,10 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
   useEffect(() => {
 
     const notesData = async () => {
-      setLoading(true);
+      setNotesLoading(true);
       const response = await getNotes(project.id);
       setNotes(response);
-      setLoading(false);
+      setNotesLoading(false);
     };
 
     if(isOpen) {
@@ -604,17 +629,29 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
   }, [project.id, reload, isOpen]);
 
   useEffect(() => {
+    if (!isOpen) return;
+
+    // Ya se pidieron las imágenes de este mismo proyecto para el "reload"
+    // actual (nada cambió desde la última vez) — no hace falta pedirlas de
+    // nuevo a la API, se quedan en memoria (estado "images") mientras la
+    // tarjeta se abre y se cierra.
+    const alreadyCached =
+      imagesCacheRef.current.id === project.id &&
+      imagesCacheRef.current.reload === reload;
+    if (alreadyCached) return;
+
     const imagesData = async () => {
-      setLoading(true);
+      setImagesLoading(true);
       const response = await getImages(project.id);
-      console.log(response);
       setImages(response);
-      setLoading(false);
+      setImagesLoading(false);
+      imagesCacheRef.current = { id: project.id, reload };
     };
 
-    if(isOpen) {
-      imagesData();
-    }
+    // Sin await: arranca apenas se abre la tarjeta (independiente de si el
+    // usuario está viendo la pestaña "Info.", "Img." o "Notas"), para que
+    // ya estén listas si entra a la pestaña de imágenes.
+    imagesData();
   }, [project.id, reload, isOpen]);
 
   const etapaActual = etapas.find((etapa) => etapa.id == project.etapa_id);
@@ -822,11 +859,15 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
                 className="hidden"
               />
 
-              {/* Caja bonita: mientras sube, muestra un spinner y bloquea
-                  el clic para no disparar otra subida encima. */}
+              {/* w-full + aspect-square (en vez de w-[150px] fijo): con ancho
+                  fijo, en pantallas angostas la caja terminaba más ancha que
+                  su columna del grid y se desbordaba encima de la siguiente
+                  imagen (tapando su botón de borrar). Al ocupar el 100% de la
+                  columna, siempre respeta el espacio real disponible sin
+                  solaparse. */}
               <label
                 htmlFor={fileUploadId}
-                className={`card bg-secondary w-[150px] h-[150px] shadow-lg font-black text-center text-3xl flex justify-center items-center ${
+                className={`card bg-secondary w-full aspect-square shadow-lg font-black text-center text-3xl flex justify-center items-center ${
                   uploading
                     ? "pointer-events-none opacity-70"
                     : "cursor-pointer"
@@ -845,9 +886,20 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
                 </p>
               )}
 
+              {/* images === undefined: aún no ha llegado la primera
+                  respuesta para este proyecto (no está en caché). Una vez
+                  que llega, aunque esté vacía ([]), ya no se vuelve a
+                  mostrar este mensaje. */}
+              {imagesLoading && images === undefined && (
+                <p className="col-span-full flex items-center gap-2 text-sm opacity-70">
+                  <span className="loading loading-spinner loading-sm"></span>
+                  Cargando imágenes...
+                </p>
+              )}
+
               {images &&
                 images.map((image, index) => (
-                  <div key={index} className="relative w-[150px] h-[150px]">
+                  <div key={index} className="relative w-full aspect-square">
                     <Link
                       href={image.img_link}
                       className="block w-full h-full"
@@ -855,7 +907,7 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
                     >
                       <Image
                         src={image.img_link}
-                        className="card w-[150px] h-[150px]"
+                        className="card w-full h-full object-cover"
                         width={150}
                         height={150}
                         alt="Darle click para abrir"
@@ -875,7 +927,7 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
             </div>
           )}
 
-          {tab == 2 && loading == false && (
+          {tab == 2 && notesLoading == false && (
             <>
               <div className="flex items-center justify-between gap-2 flex-wrap">
                 {/* The button to open modal */}

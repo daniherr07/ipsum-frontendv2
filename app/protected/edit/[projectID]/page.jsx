@@ -1,5 +1,7 @@
 import Form from "./Form";
 import { getSessionUser } from "../../getSessionUser";
+import isAdmin from "../../isAdmin";
+import { redirect } from "next/navigation";
 
 //Para manejar los formularios de los demás
 export default async function Edit({ params }) {
@@ -44,6 +46,22 @@ export default async function Edit({ params }) {
       tiposPropietarioRes.json(),
       stageNotificationRolesRes.json(),
     ]);
+
+  // Un analista/arquitecto/ingeniero (no-admin) solo puede editar los
+  // proyectos donde aparece asignado como encargado; si entra directo por
+  // URL a uno ajeno, se le devuelve a la búsqueda en vez de dejarlo ver o
+  // tocar datos de un proyecto que no le corresponde. Los admins (Root,
+  // Admin, y las variantes "* Admin" de cada rol, ver isAdmin.js) ven y
+  // editan cualquier proyecto.
+  const peopleData = result.peopleData || {};
+  const isAssigned =
+    String(peopleData.analista_id) === String(currentUser?.id) ||
+    String(peopleData.arquitecto_id) === String(currentUser?.id) ||
+    String(peopleData.ingeniero_id) === String(currentUser?.id);
+
+  if (!isAdmin(currentUser?.rol_id) && !isAssigned) {
+    redirect("/protected/search");
+  }
 
   const data = {
     projectName: result.projectName.nombre,

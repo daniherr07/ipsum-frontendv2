@@ -78,11 +78,14 @@ export default function LocationImages({ projectID, projectSlug }) {
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4 items-center">
-        {/* Mientras sube, muestra un spinner y bloquea el clic para no
-            disparar otra subida encima. */}
+        {/* w-full + aspect-square (en vez de w-[150px] fijo): con ancho fijo,
+            en pantallas angostas la caja terminaba más ancha que su columna
+            del grid y se desbordaba encima de la siguiente imagen (tapando
+            su botón de borrar). Al ocupar el 100% de la columna, siempre
+            respeta el espacio real disponible sin solaparse. */}
         <label
           htmlFor={fileUploadId}
-          className={`card bg-secondary w-[150px] h-[150px] shadow-lg font-black text-center text-3xl flex justify-center items-center ${
+          className={`card bg-secondary w-full aspect-square shadow-lg font-black text-center text-3xl flex justify-center items-center ${
             uploading ? "pointer-events-none opacity-70" : "cursor-pointer"
           }`}
         >
@@ -101,7 +104,7 @@ export default function LocationImages({ projectID, projectSlug }) {
 
         {loading == false &&
           images.map((image, index) => (
-            <div key={index} className="relative w-[150px] h-[150px]">
+            <div key={index} className="relative w-full aspect-square">
               <Link
                 href={image.img_link}
                 target="_blank"
@@ -109,7 +112,7 @@ export default function LocationImages({ projectID, projectSlug }) {
               >
                 <Image
                   src={image.img_link}
-                  className="card w-[150px] h-[150px]"
+                  className="card w-full h-full object-cover"
                   width={150}
                   height={150}
                   alt="Imagen de ubicación, dar click para abrir individualmente"
