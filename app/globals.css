@@ -178,12 +178,11 @@ summary:hover {
   filter: brightness(1.15);
 }
 
-/* Pasos de "Progreso del Proyecto" (cambio de etapa). */
+/* Pasos de "Progreso del Proyecto" (cambio de etapa): solo cambia el
+   cursor al pasar el mouse (ya viene de la clase cursor-pointer en
+   ChangeStage.jsx), sin ningún efecto de brillo/animación encima. */
 .step {
-  transition: filter 0.15s ease;
-}
-.step:hover {
-  filter: brightness(1.15);
+  cursor: pointer;
 }
 
 /* Bug de daisyUI 5 (no nuestro): su .collapse basado en <details> usa el
