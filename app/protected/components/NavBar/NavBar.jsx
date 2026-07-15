@@ -24,7 +24,7 @@ export default async function NavBar() {
     <div className="navbar bg-base-300 shadow-sm px-2 xl:px-4 gap-2 lg:gap-4 overflow-visible">
       {/** Menu Dropdown Mobiles */}
       <div className="navbar-start lg:flex-1">
-        <MobileMenu userName={userName} isUserAdmin={isUserAdmin} />
+        <MobileMenu userId={userData.id} userName={userName} isUserAdmin={isUserAdmin} />
 
         {/* En escritorio: flecha para regresar + bloque de usuario (dale
             clic para cerrar sesión, con modal de confirmación de por medio) */}
@@ -32,7 +32,7 @@ export default async function NavBar() {
           <BackButton className="btn btn-ghost btn-square btn-sm">
             <ArrowLeft size={16} />
           </BackButton>
-          <UserMenu userName={userName} className="flex items-center gap-2">
+          <UserMenu userId={userData.id} userName={userName} className="flex items-center gap-2">
             <CircleUserRound size={30} />
             <p>{userName}</p>
           </UserMenu>

@@ -13,7 +13,7 @@ import ThemeToggle from "./ThemeToggle";
 // porque el layout persiste entre navegaciones dentro de /protected/* y el
 // foco nunca se perdía solo. Con estado explícito se puede cerrar apenas se
 // elige algo.
-export default function MobileMenu({ userName, isUserAdmin }) {
+export default function MobileMenu({ userId, userName, isUserAdmin }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -66,6 +66,7 @@ export default function MobileMenu({ userName, isUserAdmin }) {
         >
           <li className="bg-base-100">
             <UserMenu
+              userId={userId}
               userName={userName}
               className="flex flex-row items-center justify-start w-full"
             >
