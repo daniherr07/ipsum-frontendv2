@@ -9,6 +9,7 @@ import isAdmin from "../isAdmin";
 export async function updateGenerics(formData) {
   const user = await getSessionUser();
   if (!user || !isAdmin(user.rol_id)) {
+    console.warn(`[updateGenerics] usuario ${user?.id ?? "anónimo"} sin permisos intentó actualizar un registro genérico`);
     return { ok: false, message: "No tiene permisos para esta acción" };
   }
 
@@ -16,17 +17,24 @@ export async function updateGenerics(formData) {
 
   const data = Object.fromEntries(formData.entries());
 
+  console.log(`[updateGenerics] admin ${user.id} actualizando registro en tabla "${data.table}"`);
+
   const res = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  }).catch(() => null);
+  }).catch((error) => {
+    console.error(`[updateGenerics] fetch falló a nivel de red (tabla "${data.table}")`, error);
+    return null;
+  });
 
   if (!res || !res.ok) {
+    console.warn(`[updateGenerics] el backend no pudo actualizar el registro en tabla "${data.table}" (status ${res?.status})`);
     return { ok: false, message: "No se pudo actualizar el registro" };
   }
 
+  console.log(`[updateGenerics] registro en tabla "${data.table}" actualizado correctamente`);
   return { ok: true, message: "Registro actualizado correctamente" };
 }

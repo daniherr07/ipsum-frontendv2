@@ -8,15 +8,21 @@ export async function insertGenerics(formData) {
 
   const data = Object.fromEntries(formData.entries());
 
+  console.log(`[insertGenerics] insertando registro en tabla "${data.table}"`);
+
   const res = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  }).catch(() => null);
+  }).catch((error) => {
+    console.error(`[insertGenerics] fetch falló a nivel de red (tabla "${data.table}")`, error);
+    return null;
+  });
 
   if (!res || !res.ok) {
+    console.warn(`[insertGenerics] el backend no pudo crear el registro en tabla "${data.table}" (status ${res?.status})`);
     return { ok: false, message: "No se pudo crear el registro" };
   }
 
@@ -24,6 +30,7 @@ export async function insertGenerics(formData) {
   // proyecto) armar la nueva opción y seleccionarla de una vez, sin
   // necesidad de volver a pedir toda la lista.
   const result = await res.json();
+  console.log(`[insertGenerics] registro creado correctamente en tabla "${data.table}", insertId ${result.insertId}`);
   return {
     ok: true,
     message: "Registro creado correctamente",

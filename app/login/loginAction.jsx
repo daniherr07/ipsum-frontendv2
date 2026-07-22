@@ -11,9 +11,11 @@ export async function loginAction(formData) {
 
   const endpoint = process.env.BACKEND_URL + "/login";
 
-  // DEBUG temporal: confirma qué URL exacta se está llamando (¿BACKEND_URL
-  // llegó bien al runtime de Vercel?) y si el fetch truena a nivel de red
-  // (DNS/CORS/timeout) antes de siquiera llegar al backend.
+  // Log de diagnóstico permanente (no solo para depurar un incidente
+  // puntual): confirma qué URL exacta se está llamando (¿BACKEND_URL llegó
+  // bien al runtime de Vercel?) y si el fetch truena a nivel de red
+  // (DNS/CORS/timeout) antes de siquiera llegar al backend. Nunca loguear
+  // password acá.
   console.log("[loginAction] BACKEND_URL =", process.env.BACKEND_URL);
   console.log("[loginAction] endpoint =", endpoint);
 
