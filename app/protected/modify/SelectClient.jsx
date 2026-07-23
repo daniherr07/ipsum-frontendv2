@@ -130,8 +130,15 @@ function GenericUpdate({ genericData, loading, localTable, entidades, bonos, rel
           </button>
 
           {creating && (
+            // Ojo: NO llevar la clase "collapse-content" acá — ese formulario
+            // (a diferencia del de editar, más abajo) no vive dentro de un
+            // <details>/.collapse. La regla de daisyUI para .collapse-content
+            // pone content-visibility:hidden salvo que su padre sea
+            // literalmente un <details> o un .collapse abierto; sin eso, el
+            // formulario quedaba invisible e inutilizable aunque estuviera
+            // montado en el DOM (por eso "Añadir" parecía no hacer nada).
             <Form
-              className="collapse-content text-sm flex flex-col gap-3 bg-base-200 border border-base-300 rounded-box w-full p-4"
+              className="text-sm flex flex-col gap-3 bg-base-200 border border-base-300 rounded-box w-full p-4"
               action={async (formData) => {
                 const result = await insertGenerics(formData);
                 setStatus(result);
