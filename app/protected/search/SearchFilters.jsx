@@ -242,7 +242,7 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
             lo ignora por completo); en móvil vive escondido y se abre desde
             el botón "Buscar y filtrar" de más abajo, para no ocupar toda la
             pantalla con filtros antes de ver un solo proyecto. */}
-        <aside className="hidden lg:block lg:w-72 xl:w-80 lg:sticky lg:top-4">
+        <aside className="hidden lg:block lg:w-72 xl:w-65 lg:sticky lg:top-4">
           <div className="bg-base-200 border border-base-300 rounded-box shadow-md p-4">
             <FilterPanel
               sortBy={sortBy}
@@ -454,7 +454,6 @@ function FilterPanel({
       )}
 
       <label className="label mb-2">
-        Ordenar por
         <select
           className="select select-sm w-full"
           value={sortBy}

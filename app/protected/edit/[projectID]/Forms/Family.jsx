@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { saveFamily } from "../SaveActions/saveFamily";
 import { updateFamily } from "../SaveActions/editFamily";
 import { uploadMemberPhoto } from "../SaveActions/uploadMemberPhoto";
+import { deleteMemberPhoto } from "../SaveActions/deleteMemberPhoto";
 import { convertHeicToPngIfNeeded } from "../../../lib/convertHeicToPng";
 import getFamilyData from "../GetFamily/getFamilyData";
 import Image from "next/image";
@@ -99,6 +100,17 @@ export default function Family({ familyForm, projectID, projectSlug }) {
     }
   };
 
+  // Borra la foto de cédula (sin tocar el resto de los datos del familiar).
+  const handlePhotoDelete = async (member) => {
+    setUploadingId(member.db_id);
+    const result = await deleteMemberPhoto(member.db_id, member.id_route);
+    setUploadingId(null);
+    setStatus(result);
+    if (result.ok) {
+      setReload((prev) => !prev);
+    }
+  };
+
   return (
     <>
       <button
@@ -172,21 +184,34 @@ export default function Family({ familyForm, projectID, projectSlug }) {
                     <p className="text-base-content/60">Sin archivo subido</p>
                   )}
 
-                  <label
-                    htmlFor={`cedula-photo-${member.db_id}`}
-                    className={`btn btn-sm btn-outline ${uploadingId === member.db_id ? "btn-disabled" : ""}`}
-                  >
-                    {uploadingId === member.db_id ? (
-                      <>
-                        <span className="loading loading-spinner loading-xs"></span>
-                        Subiendo...
-                      </>
-                    ) : member.id_link ? (
-                      "Cambiar foto"
-                    ) : (
-                      "Añadir foto"
+                  <div className="flex gap-2">
+                    <label
+                      htmlFor={`cedula-photo-${member.db_id}`}
+                      className={`btn btn-sm btn-outline ${uploadingId === member.db_id ? "btn-disabled" : ""}`}
+                    >
+                      {uploadingId === member.db_id ? (
+                        <>
+                          <span className="loading loading-spinner loading-xs"></span>
+                          Subiendo...
+                        </>
+                      ) : member.id_link ? (
+                        "Cambiar foto"
+                      ) : (
+                        "Añadir foto"
+                      )}
+                    </label>
+
+                    {member.id_link && (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline btn-error"
+                        disabled={uploadingId === member.db_id}
+                        onClick={() => handlePhotoDelete(member)}
+                      >
+                        Eliminar imagen
+                      </button>
                     )}
-                  </label>
+                  </div>
                   <input
                     id={`cedula-photo-${member.db_id}`}
                     type="file"
