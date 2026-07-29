@@ -153,7 +153,7 @@ export default function Basic({ basicsForm, setBasicsForm, formValues }) {
             <option disabled={true} value={""}>
               Seleccione un tipo de agrupación
             </option>
-            <option>Sin agrupar</option>
+            <option value={""}>Sin agrupar</option>
             {grupos.map((grupo) => (
               <option key={grupo.id} value={grupo.id}>
                 {grupo.nombre}
