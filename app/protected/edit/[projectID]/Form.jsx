@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { saveInfo } from "./SaveActions/saveInfo";
 import StatusModal from "../../components/StatusModal";
+import ErrorToast from "../../components/ErrorToast";
 
 export default function Form({
   data,
@@ -29,6 +30,10 @@ export default function Form({
   const router = useRouter();
   const [current, setCurrent] = useState(0);
   const [status, setStatus] = useState(null);
+  // Separado de "status": un error de autoguardado usa un aviso de esquina
+  // (ErrorToast) que no interrumpe, en vez del modal de pantalla completa
+  // que sí tiene sentido cuando el usuario mismo pidió guardar.
+  const [autoSaveError, setAutoSaveError] = useState(null);
   const [saving, setSaving] = useState(false);
 
   const [basicsForm, setBasicsForm] = useState(data.basicsData);
@@ -66,13 +71,14 @@ export default function Form({
         latest.peopleForm,
         projectID,
       );
-      // El autoguardado es silencioso cuando sale bien (mostrar un modal
-      // cada 30s interrumpiría al usuario mientras escribe); solo se avisa
-      // si falla, para que no se pierda trabajo sin que nadie se entere.
+      // El autoguardado es silencioso cuando sale bien (mostrar algo cada
+      // minuto interrumpiría al usuario mientras escribe); solo se avisa si
+      // falla, con un aviso de esquina (no el modal de guardado manual) para
+      // no perder trabajo sin que nadie se entere, sin cortar el flujo.
       if (!result.ok) {
-        setStatus(result);
+        setAutoSaveError(result);
       }
-    }, 30000);
+    }, 60000);
 
     return () => clearInterval(interval);
   }, [projectID]);
@@ -169,6 +175,7 @@ export default function Form({
       </button>
 
       <StatusModal status={status} onClose={() => setStatus(null)} />
+      <ErrorToast status={autoSaveError} onClose={() => setAutoSaveError(null)} />
     </main>
   );
 }
