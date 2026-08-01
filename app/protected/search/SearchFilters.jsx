@@ -32,6 +32,19 @@ import isAdmin from "../isAdmin";
 // necesidad de tocar la URL.
 const SEARCH_STATE_KEY = "ipsum:searchFilters";
 
+// "Facturado" (última etapa del pipeline, tabla etapas): un proyecto en esta
+// etapa ya se cobró y se dio por cerrado. Se ocultan del listado por
+// defecto (igual que los descartados) para no saturarlo con proyectos ya
+// terminados; solo vuelven a aparecer si el usuario los pide explícitamente
+// marcando "Facturado" en el filtro de Etapa.
+//
+// Se busca por NOMBRE en vez de un id fijo: el id de "Facturado" no es el
+// mismo en todos los entornos (ipsumdb tiene 15 etapas y ahí es el id 15;
+// ipsumdbfinal tiene una lista de etapas más corta —11— y ahí es el id 11),
+// así que un número fijo se rompía según la base de datos contra la que
+// corriera la app.
+const FINALIZED_ETAPA_NAME = "facturado";
+
 function loadStoredSearchState() {
   try {
     return JSON.parse(sessionStorage.getItem(SEARCH_STATE_KEY)) || {};
@@ -184,6 +197,13 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
   // todos los proyectos sin restricción.
   const userIsAdmin = isAdmin(userData?.rol_id);
 
+  const finalizedEtapaId = useMemo(
+    () =>
+      etapas?.find((etapa) => etapa.nombre?.trim().toLowerCase() === FINALIZED_ETAPA_NAME)
+        ?.id ?? null,
+    [etapas],
+  );
+
   const visibleProjects = useMemo(() => {
     if (!projects) return [];
 
@@ -201,6 +221,19 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
       const isDiscarded = project.activo == 0;
       if (isDiscarded !== showDiscarded) {
         return false;
+      }
+
+      // Proyectos finalizados ("Facturado"): ocultos salvo que el usuario
+      // haya marcado esa etapa a propósito en el filtro de Etapa. A
+      // diferencia de "Descartados", esto no es excluyente: no afecta a los
+      // demás proyectos, solo agrega la condición extra de "pedilo a propósito"
+      // sobre los que están en esta etapa puntual.
+      if (finalizedEtapaId != null && project.etapa_id == finalizedEtapaId) {
+        const requestedEtapas = activeFilters.etapa_id || [];
+        const finalizedRequested = requestedEtapas.some(
+          (id) => Number(id) === finalizedEtapaId,
+        );
+        if (!finalizedRequested) return false;
       }
 
       if (!userIsAdmin) {
@@ -232,7 +265,7 @@ export default function SearchFilters({ projects, userData, searchFilters, etapa
       }
     }
     return [...startsWith, ...containsOnly];
-  }, [projects, search, showDiscarded, activeFilters, sortBy, userIsAdmin, userData]);
+  }, [projects, search, showDiscarded, activeFilters, sortBy, userIsAdmin, userData, finalizedEtapaId]);
 
   return (
     <div className="w-full h-fit p-4">
