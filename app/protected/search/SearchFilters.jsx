@@ -11,6 +11,8 @@ import {
   FlagTriangleRight,
   SlidersHorizontal,
   X,
+  MessageCircle,
+  Mail,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -22,6 +24,7 @@ import { saveImages } from "./saveImages";
 import { deleteImage } from "./deleteImage";
 import { updateProjectStatus } from "./updateProjectStatus";
 import getImages from "./getImages";
+import getFamilies from "./getFamilies";
 import { convertHeicToPngIfNeeded } from "../lib/convertHeicToPng";
 import Image from "next/image";
 import StatusModal from "../components/StatusModal";
@@ -61,6 +64,26 @@ const SORT_OPTIONS = [
   { value: "etapa-asc", label: "Etapa (menor a mayor)" },
   { value: "etapa-desc", label: "Etapa (mayor a menor)" },
 ];
+
+// wa.me necesita el número completo con código de país — los números
+// locales de Costa Rica se capturan con 8 dígitos, sin el 506 adelante.
+function buildWhatsAppLink(phone) {
+  const digits = (phone || "").replace(/\D/g, "");
+  if (!digits) return null;
+  const withCountryCode = digits.length === 8 ? `506${digits}` : digits;
+  return `https://wa.me/${withCountryCode}`;
+}
+
+// google_url se guarda como "https://www.google.com/maps?q=lat,lng" (ver
+// LocationMap.jsx, donde se edita). El embed público de Google Maps no
+// necesita API key, así que la preview puede mostrar el pin ya guardado
+// sin depender de NEXT_PUBLIC_GOOGLE_MAPS_API_KEY.
+function buildMapEmbedUrl(googleUrl) {
+  if (!googleUrl) return null;
+  const match = googleUrl.match(/q=(-?\d+\.?\d*),(-?\d+\.?\d*)/);
+  if (!match) return null;
+  return `https://www.google.com/maps?q=${match[1]},${match[2]}&z=16&output=embed`;
+}
 
 // Compara el valor del proyecto contra los valores seleccionados de un
 // filtro. Los campos de texto (provincia, entidad, encargados...) se
@@ -580,6 +603,10 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
 
   const [images, setImages] = useState();
   const [imagesLoading, setImagesLoading] = useState(false);
+  // Familiares marcados como "Contacto" (ver Family.jsx) para mostrarlos
+  // resumidos acá, con botones directos de WhatsApp/correo.
+  const [contacts, setContacts] = useState();
+  const contactsCacheRef = useRef({ id: null, reload: null });
   // Recuerda para qué proyecto/reload ya se pidieron las imágenes, para no
   // volver a pedirlas de la API cada vez que se cierra y se vuelve a abrir
   // la misma tarjeta (solo cambia cuando de verdad hay que refrescar: otro
@@ -686,6 +713,23 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
     imagesData();
   }, [project.id, reload, isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const alreadyCached =
+      contactsCacheRef.current.id === project.id &&
+      contactsCacheRef.current.reload === reload;
+    if (alreadyCached) return;
+
+    const contactsData = async () => {
+      const response = await getFamilies(project.id);
+      setContacts((response || []).filter((member) => member.is_contact == 1));
+      contactsCacheRef.current = { id: project.id, reload };
+    };
+
+    contactsData();
+  }, [project.id, reload, isOpen]);
+
   const etapaActual = etapas.find((etapa) => etapa.id == project.etapa_id);
 
   if(project.id == 241){
@@ -696,6 +740,7 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
       <details
         className="collapse collapse-arrow bg-base-200 border border-base-300 shadow-lg relative z-1"
         open={isOpen}
+        suppressHydrationWarning
       >
         <summary
           className="collapse-title font-semibold"
@@ -784,6 +829,13 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
             >
               Notas
             </a>
+            <a
+              role="tab"
+              className={`tab flex-1 ${tab == 3 && "tab-active"}`}
+              onClick={() => setTab(3)}
+            >
+              Mapa
+            </a>
           </div>
 
           {tab == 0 && (
@@ -841,6 +893,61 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
                 </div>
                 {project.otro || "Sin otras señas"}
               </div>
+
+              {/* Familiares marcados como "Contacto" en el editor (ver
+                  Family.jsx) — resumen sin cédula, con acceso directo a
+                  WhatsApp/correo. No se muestra nada si ninguno está marcado. */}
+              {contacts && contacts.length > 0 && (
+                <div className="lg:col-span-3 flex flex-col gap-2">
+                  <h3 className="font-semibold flex items-center gap-2">
+                    <User size={20} /> Contactos
+                  </h3>
+                  <div className="flex flex-col gap-2">
+                    {contacts.map((member) => {
+                      const whatsappLink = member.telefono
+                        ? buildWhatsAppLink(member.telefono)
+                        : null;
+                      return (
+                        <div
+                          key={member.db_id}
+                          className="rounded-box bg-base-100 border border-base-300 p-3 flex items-center justify-between gap-3 flex-wrap"
+                        >
+                          <div>
+                            <p className="font-semibold">
+                              {`${member.nombre} ${member.apellido1} ${member.apellido2}`.trim() ||
+                                "Sin nombre"}
+                            </p>
+                            <p className="text-xs opacity-60">
+                              {member.tipo_miembro || "Sin tipo especificado"}
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            {whatsappLink && (
+                              <Link
+                                href={whatsappLink}
+                                target="_blank"
+                                className="btn btn-sm btn-success btn-outline"
+                              >
+                                <MessageCircle size={16} />
+                                WhatsApp
+                              </Link>
+                            )}
+                            {member.email && (
+                              <Link
+                                href={`mailto:${member.email}`}
+                                className="btn btn-sm btn-outline"
+                              >
+                                <Mail size={16} />
+                                Correo
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               <div className="lg:col-span-3">
                 <details className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-box">
@@ -1039,6 +1146,23 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
                   })}
             </>
           )}
+
+          {tab == 3 &&
+            (() => {
+              const embedUrl = buildMapEmbedUrl(project.google_url);
+              return embedUrl ? (
+                <iframe
+                  src={embedUrl}
+                  className="w-full h-96 rounded-box border border-base-300"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              ) : (
+                <p className="text-sm opacity-70">
+                  Este proyecto no tiene una ubicación marcada en el mapa.
+                </p>
+              );
+            })()}
 
           <div className="w-full flex gap-1">
             <Link

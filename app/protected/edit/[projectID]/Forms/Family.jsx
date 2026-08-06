@@ -53,6 +53,7 @@ export default function Family({ familyForm, projectID, projectSlug }) {
     telefono: "",
     adulto: false,
     discapacidad: false,
+    is_contact: false,
     img_file: "",
     proyecto_id: projectID,
   };
@@ -247,6 +248,12 @@ export default function Family({ familyForm, projectID, projectSlug }) {
                     {member.discapacidad == 1 && (
                       <div className="badge badge-soft badge-secondary">
                         Discapacidad
+                      </div>
+                    )}
+
+                    {member.is_contact == 1 && (
+                      <div className="badge badge-soft badge-accent">
+                        Contacto
                       </div>
                     )}
                   </div>
@@ -528,6 +535,21 @@ function FamilyFields({ form, setForm }) {
           Discapacidad
         </label>
       </div>
+
+      {/* Marca a este familiar como la persona de contacto del proyecto —
+          se usa para mostrar un resumen (sin cédula) con botones de
+          WhatsApp/correo en la vista previa de "Buscar". */}
+      <label className="label">
+        <input
+          type="checkbox"
+          className="checkbox"
+          checked={!!form.is_contact}
+          onChange={(e) =>
+            setForm((prev) => ({ ...prev, is_contact: e.target.checked }))
+          }
+        />
+        Contacto
+      </label>
     </>
   );
 }

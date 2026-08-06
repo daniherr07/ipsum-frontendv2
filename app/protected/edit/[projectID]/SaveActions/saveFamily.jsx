@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 export async function saveFamily(member, projectSlug) {
   member.adulto = member.adulto ? 1 : 0;
   member.discapacidad = member.discapacidad ? 1 : 0;
+  member.is_contact = member.is_contact ? 1 : 0;
 
   const endpoint = process.env.BACKEND_URL + "/insertMember";
 
