@@ -174,7 +174,19 @@ export default function Form({
         )}
       </button>
 
-      <StatusModal status={status} onClose={() => setStatus(null)} />
+      <StatusModal
+        status={status}
+        onClose={() => {
+          // Solo al aceptar un guardado EXITOSO manda de vuelta a "Buscar" —
+          // si falló, se queda en el editor para que el usuario pueda
+          // corregir e intentar de nuevo en vez de perder de vista el error.
+          const wasSuccess = status?.ok;
+          setStatus(null);
+          if (wasSuccess) {
+            router.push("/protected/search");
+          }
+        }}
+      />
       <ErrorToast status={autoSaveError} onClose={() => setAutoSaveError(null)} />
     </main>
   );

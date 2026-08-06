@@ -835,47 +835,58 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
                 color="accent"
               />
 
-              <div className="lg:col-span-3 flex flex-col gap-2">
-                <h3 className="font-semibold flex items-center gap-2">
-                  <User size={20} /> Encargados del proyecto
-                </h3>
-                <div className="overflow-x-auto rounded-box border border-base-300">
-                  <table className="table">
-                    {/* head */}
-                    <thead>
-                      <tr>
-                        <th>Respons.</th>
-                        <th>Nombre</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th>Constructor</th>
-                        <td>{project.p_constructor || "Sin definir"}</td>
-                      </tr>
-                      <tr>
-                        <th>Arquitecto</th>
-                        <td>{project.arquitecto || "Sin definir"}</td>
-                      </tr>
-                      <tr>
-                        <th>Promotor</th>
-                        <td>{project.promotor || "Sin definir"}</td>
-                      </tr>
-                      <tr>
-                        <th>Analista</th>
-                        <td>{project.analista || "Sin definir"}</td>
-                      </tr>
-                      <tr>
-                        <th>Ingeniero</th>
-                        <td>{project.ingeniero || "Sin definir"}</td>
-                      </tr>
-                      <tr>
-                        <th>Fiscal</th>
-                        <td>{project.fiscal || "Sin definir"}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+              <div className="lg:col-span-3 rounded-box bg-base-100 p-4">
+                <div className="text-xs uppercase font-semibold opacity-60 mb-1">
+                  Otras señas
                 </div>
+                {project.otro || "Sin otras señas"}
+              </div>
+
+              <div className="lg:col-span-3">
+                <details className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-box">
+                  <summary className="collapse-title font-semibold flex items-center gap-2">
+                    <User size={20} /> Encargados del proyecto
+                  </summary>
+                  <div className="collapse-content text-sm">
+                    <div className="overflow-x-auto rounded-box border border-base-300">
+                      <table className="table">
+                        {/* head */}
+                        <thead>
+                          <tr>
+                            <th>Respons.</th>
+                            <th>Nombre</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th>Constructor</th>
+                            <td>{project.p_constructor || "Sin definir"}</td>
+                          </tr>
+                          <tr>
+                            <th>Arquitecto</th>
+                            <td>{project.arquitecto || "Sin definir"}</td>
+                          </tr>
+                          <tr>
+                            <th>Promotor</th>
+                            <td>{project.promotor || "Sin definir"}</td>
+                          </tr>
+                          <tr>
+                            <th>Analista</th>
+                            <td>{project.analista || "Sin definir"}</td>
+                          </tr>
+                          <tr>
+                            <th>Ingeniero</th>
+                            <td>{project.ingeniero || "Sin definir"}</td>
+                          </tr>
+                          <tr>
+                            <th>Fiscal</th>
+                            <td>{project.fiscal || "Sin definir"}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </details>
               </div>
             </div>
           )}
