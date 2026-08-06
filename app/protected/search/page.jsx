@@ -89,7 +89,8 @@ export default async function Search() {
       fetch(process.env.BACKEND_URL + "/generics/etapas"),
       fetch(process.env.BACKEND_URL + "/formValues"),
     ]);
-
+  
+  
   const [projects, bonos, variantes, etapas, formValues] = await Promise.all([
     projectsRes.json(),
     bonosRes.json(),
@@ -97,6 +98,7 @@ export default async function Search() {
     etapasRes.json(),
     formValuesRes.json(),
   ]);
+  console.log(bonos)
 
   const cookieStore = await cookies();
 

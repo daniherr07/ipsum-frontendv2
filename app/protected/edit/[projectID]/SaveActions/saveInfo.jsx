@@ -33,6 +33,7 @@ export async function saveInfo(
   peopleForm,
   projectID,
 ) {
+
   const sections = buildSections(basicsForm, locationForm, adminForm, peopleForm, projectID);
   console.log(`[saveInfo] guardando basics/location/admin/people en paralelo para el proyecto ${projectID}`);
 

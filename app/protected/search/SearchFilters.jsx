@@ -688,6 +688,9 @@ function ProjectItem({ project, userData, projectKey, etapas, isOpen, onToggleOp
 
   const etapaActual = etapas.find((etapa) => etapa.id == project.etapa_id);
 
+  if(project.id == 241){
+    console.log(project)
+  }
   return (
     <>
       <details

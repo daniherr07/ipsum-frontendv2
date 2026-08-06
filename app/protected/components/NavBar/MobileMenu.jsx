@@ -21,7 +21,14 @@ export default function MobileMenu({ userId, userName, isUserAdmin }) {
     if (!open) return;
 
     function handlePointerDown(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      // UserMenu monta sus modales en un portal directo a document.body (ver
+      // UserMenu.jsx), así que ya no viven dentro de menuRef en el DOM
+      // aunque sigan siendo su hijo lógico en React — sin este chequeo
+      // aparte, cualquier clic en esos modales (ej. "Cambiar contraseña",
+      // "Cerrar sesión") se veía como "afuera" y cerraba este menú completo,
+      // desmontando el modal con él.
+      const insideUserMenuPortal = event.target.closest("[data-usermenu-portal]");
+      if (menuRef.current && !menuRef.current.contains(event.target) && !insideUserMenuPortal) {
         setOpen(false);
       }
     }

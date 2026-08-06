@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Form from "next/form";
 import { KeyRound, LogOut } from "lucide-react";
 import { logOffAction } from "./logOffAction";
@@ -13,6 +14,31 @@ import { changeOwnPasswordAction } from "./changeOwnPasswordAction";
 export default function UserMenu({ userId, userName, className, children }) {
   // null | "menu" | "logout" | "password"
   const [mode, setMode] = useState(null);
+
+  // Los modales se montan con un portal directo a document.body (ver más
+  // abajo) en vez de en el lugar donde vive <UserMenu> en el árbol — en el
+  // menú móvil eso es adentro de un <ul class="dropdown-content">, que
+  // daisyUI anima con "scale" (aunque esté "abierto", scale nunca es
+  // exactamente "none"). Cualquier ancestro con scale/transform/filter
+  // activo crea su propio "contenedor" para los hijos position:fixed, así
+  // que el modal (que asume que su fixed lo posiciona respecto a toda la
+  // pantalla) quedaba encerrado dentro de esa cajita chiquita del dropdown
+  // en vez de cubrir la pantalla — y en cuanto el dropdown perdía el foco
+  // (típico al tocar botones en celular, que no siempre enfocan como en
+  // escritorio), daisyUI lo cerraba visualmente con su propia transición,
+  // haciendo que el modal (atrapado adentro) pareciera "cerrarse solo" un
+  // instante después de abrirse. document.body no tiene ningún ancestro así,
+  // así que el modal en portal siempre cubre la pantalla real y no depende
+  // de que el dropdown se mantenga "abierto" para poder verse.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    // document.body no existe en el render del servidor; el portal solo
+    // puede montarse una vez que el componente ya está en el navegador. Este
+    // es justo el caso legítimo que la regla de abajo no contempla:
+    // sincronizar con algo que no existe en SSR.
+    /* eslint-disable-next-line react-hooks/set-state-in-effect */
+    setMounted(true);
+  }, []);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -69,154 +95,164 @@ export default function UserMenu({ userId, userName, className, children }) {
         {children}
       </button>
 
-      {mode === "menu" && (
-        <div className="modal modal-open" role="dialog">
-          <div className="modal-box">
-            <h3 className="text-lg font-bold mb-3">{userName}</h3>
-            <div className="flex flex-col gap-2">
-              <button
-                type="button"
-                className="btn btn-outline justify-start"
-                onClick={() => setMode("password")}
-              >
-                <KeyRound size={18} />
-                Cambiar contraseña
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline btn-error justify-start"
-                onClick={() => setMode("logout")}
-              >
-                <LogOut size={18} />
-                Cerrar sesión
-              </button>
-            </div>
-            <div className="modal-action">
-              <button type="button" className="btn w-full" onClick={closeAll}>
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {mode === "logout" && (
-        <div className="modal modal-open" role="dialog">
-          <div className="modal-box">
-            <h3 className="text-lg font-bold">¿Cerrar sesión?</h3>
-            <p className="py-4">
-              {userName}, vas a salir del sistema y tendrás que iniciar sesión
-              de nuevo para continuar.
-            </p>
-            <div className="modal-action flex justify-between">
-              <button
-                type="button"
-                className="btn"
-                onClick={() => setMode("menu")}
-              >
-                Cancelar
-              </button>
-              <Form action={logOffAction}>
-                <button type="submit" className="btn btn-error">
-                  Cerrar sesión
-                </button>
-              </Form>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {mode === "password" && (
-        <div className="modal modal-open" role="dialog">
-          <div className="modal-box">
-            <h3 className="text-lg font-bold mb-3">Cambiar contraseña</h3>
-
-            {passwordSuccess ? (
-              <>
-                <p className="py-4 text-success">
-                  Contraseña actualizada correctamente.
-                </p>
-                <div className="modal-action">
+      {mounted && mode && createPortal(
+        // data-usermenu-portal: al vivir fuera de <MobileMenu> en el DOM
+        // (aunque siga siendo su hijo lógico en React), su detector de "clic
+        // afuera" ya no lo reconoce como parte del menú — sin este marcador
+        // para que MobileMenu lo trate como "adentro", cualquier clic acá
+        // cerraría el menú móvil completo (y con él, este mismo modal).
+        <div data-usermenu-portal="">
+          {mode === "menu" && (
+            <div className="modal modal-open" role="dialog">
+              <div className="modal-box">
+                <h3 className="text-lg font-bold mb-3">{userName}</h3>
+                <div className="flex flex-col gap-2">
                   <button
                     type="button"
-                    className="btn btn-primary w-full"
-                    onClick={closeAll}
+                    className="btn btn-outline justify-start"
+                    onClick={() => setMode("password")}
                   >
+                    <KeyRound size={18} />
+                    Cambiar contraseña
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-error justify-start"
+                    onClick={() => setMode("logout")}
+                  >
+                    <LogOut size={18} />
+                    Cerrar sesión
+                  </button>
+                </div>
+                <div className="modal-action">
+                  <button type="button" className="btn w-full" onClick={closeAll}>
                     Cerrar
                   </button>
                 </div>
-              </>
-            ) : (
-              <form
-                onSubmit={handleChangePassword}
-                className="flex flex-col gap-3"
-              >
-                <fieldset className="fieldset">
-                  <legend className="fieldset-legend">
-                    Contraseña actual
-                  </legend>
-                  <input
-                    type="password"
-                    className="input w-full"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    required
-                  />
-                </fieldset>
+              </div>
+            </div>
+          )}
 
-                <fieldset className="fieldset">
-                  <legend className="fieldset-legend">
-                    Contraseña nueva
-                  </legend>
-                  <input
-                    type="password"
-                    className="input w-full"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    minLength={8}
-                    required
-                  />
-                </fieldset>
-
-                <fieldset className="fieldset">
-                  <legend className="fieldset-legend">
-                    Confirmar contraseña nueva
-                  </legend>
-                  <input
-                    type="password"
-                    className="input w-full"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    minLength={8}
-                    required
-                  />
-                </fieldset>
-
-                {passwordError && (
-                  <p className="text-error text-sm">{passwordError}</p>
-                )}
-
+          {mode === "logout" && (
+            <div className="modal modal-open" role="dialog">
+              <div className="modal-box">
+                <h3 className="text-lg font-bold">¿Cerrar sesión?</h3>
+                <p className="py-4">
+                  {userName}, vas a salir del sistema y tendrás que iniciar sesión
+                  de nuevo para continuar.
+                </p>
                 <div className="modal-action flex justify-between">
                   <button
                     type="button"
                     className="btn"
                     onClick={() => setMode("menu")}
-                    disabled={submitting}
                   >
                     Cancelar
                   </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={submitting}
-                  >
-                    {submitting ? "Guardando..." : "Cambiar contraseña"}
-                  </button>
+                  <Form action={logOffAction}>
+                    <button type="submit" className="btn btn-error">
+                      Cerrar sesión
+                    </button>
+                  </Form>
                 </div>
-              </form>
-            )}
-          </div>
-        </div>
+              </div>
+            </div>
+          )}
+
+          {mode === "password" && (
+            <div className="modal modal-open" role="dialog">
+              <div className="modal-box">
+                <h3 className="text-lg font-bold mb-3">Cambiar contraseña</h3>
+
+                {passwordSuccess ? (
+                  <>
+                    <p className="py-4 text-success">
+                      Contraseña actualizada correctamente.
+                    </p>
+                    <div className="modal-action">
+                      <button
+                        type="button"
+                        className="btn btn-primary w-full"
+                        onClick={closeAll}
+                      >
+                        Cerrar
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <form
+                    onSubmit={handleChangePassword}
+                    className="flex flex-col gap-3"
+                  >
+                    <fieldset className="fieldset">
+                      <legend className="fieldset-legend">
+                        Contraseña actual
+                      </legend>
+                      <input
+                        type="password"
+                        className="input w-full"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        required
+                      />
+                    </fieldset>
+
+                    <fieldset className="fieldset">
+                      <legend className="fieldset-legend">
+                        Contraseña nueva
+                      </legend>
+                      <input
+                        type="password"
+                        className="input w-full"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        minLength={8}
+                        required
+                      />
+                    </fieldset>
+
+                    <fieldset className="fieldset">
+                      <legend className="fieldset-legend">
+                        Confirmar contraseña nueva
+                      </legend>
+                      <input
+                        type="password"
+                        className="input w-full"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        minLength={8}
+                        required
+                      />
+                    </fieldset>
+
+                    {passwordError && (
+                      <p className="text-error text-sm">{passwordError}</p>
+                    )}
+
+                    <div className="modal-action flex justify-between">
+                      <button
+                        type="button"
+                        className="btn"
+                        onClick={() => setMode("menu")}
+                        disabled={submitting}
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
+                        disabled={submitting}
+                      >
+                        {submitting ? "Guardando..." : "Cambiar contraseña"}
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            </div>
+          )}
+        </div>,
+        document.body,
       )}
     </>
   );
