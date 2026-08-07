@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 export async function getNotifications(userId) {
   const endpoint = process.env.BACKEND_URL + `/notifications/${userId}`;
 
@@ -7,6 +9,7 @@ export async function getNotifications(userId) {
 
   const res = await fetch(endpoint, { cache: "no-store" }).catch((error) => {
     console.error(`[getNotifications] fetch falló a nivel de red (usuario ${userId})`, error);
+    Sentry.captureException(error);
     return null;
   });
 
@@ -32,6 +35,7 @@ export async function markNotificationRead(id, usuarioId) {
     body: JSON.stringify({ id, usuario_id: usuarioId }),
   }).catch((error) => {
     console.error(`[markNotificationRead] fetch falló a nivel de red (notificación ${id}, usuario ${usuarioId})`, error);
+    Sentry.captureException(error);
     return null;
   });
 
@@ -54,6 +58,7 @@ export async function markAllNotificationsRead(usuarioId) {
     body: JSON.stringify({ usuario_id: usuarioId }),
   }).catch((error) => {
     console.error(`[markAllNotificationsRead] fetch falló a nivel de red (usuario ${usuarioId})`, error);
+    Sentry.captureException(error);
     return null;
   });
 
@@ -75,6 +80,7 @@ export async function deleteNotification(id, usuarioId) {
     body: JSON.stringify({ id, usuario_id: usuarioId }),
   }).catch((error) => {
     console.error(`[deleteNotification] fetch falló a nivel de red (notificación ${id}, usuario ${usuarioId})`, error);
+    Sentry.captureException(error);
     return null;
   });
 
@@ -96,6 +102,7 @@ export async function deleteAllNotifications(usuarioId) {
     body: JSON.stringify({ usuario_id: usuarioId }),
   }).catch((error) => {
     console.error(`[deleteAllNotifications] fetch falló a nivel de red (usuario ${usuarioId})`, error);
+    Sentry.captureException(error);
     return null;
   });
 

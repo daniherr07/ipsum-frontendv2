@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -19,6 +21,7 @@ export async function changePasswordAction(id, currentPassword, newPassword) {
     body: JSON.stringify({ id, currentPassword, newPassword }),
   }).catch((error) => {
     console.error(`[changePasswordAction] fetch falló a nivel de red (usuario ${id})`, error);
+    Sentry.captureException(error);
     return null;
   });
 

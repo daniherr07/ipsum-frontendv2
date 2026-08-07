@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 export async function stageAction(projectID, etapa_id, remitente_usuario_id) {
   const endpoint = process.env.BACKEND_URL + "/changeStage";
 
@@ -13,6 +15,7 @@ export async function stageAction(projectID, etapa_id, remitente_usuario_id) {
     body: JSON.stringify({ projectID, etapa_id, remitente_usuario_id }),
   }).catch((error) => {
     console.error(`[stageAction] fetch falló a nivel de red (proyecto ${projectID}, etapa ${etapa_id})`, error);
+    Sentry.captureException(error);
     return null;
   });
 

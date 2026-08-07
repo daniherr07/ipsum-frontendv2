@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 export async function deleteImage(id, img_route) {
   const endpoint = process.env.BACKEND_URL + "/deleteProjectPhoto";
 
@@ -13,6 +15,7 @@ export async function deleteImage(id, img_route) {
     body: JSON.stringify({ id, img_route }),
   }).catch((error) => {
     console.error(`[deleteImage] fetch falló a nivel de red (proyecto ${id}, ${img_route})`, error);
+    Sentry.captureException(error);
     return null;
   });
 

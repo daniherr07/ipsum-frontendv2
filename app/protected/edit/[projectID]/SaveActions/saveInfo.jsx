@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 // Los 4 formularios (básicos, ubicación, administrativos, encargados) se
 // guardan en tablas distintas y no dependen entre sí, así que se envían en
 // paralelo en vez de uno tras otro (4x menos latencia de red en cada guardado
@@ -74,11 +76,23 @@ export async function saveInfo(
           `[saveInfo] fetch falló a nivel de red guardando "${failure.section.label}" (proyecto ${projectID})`,
           { datosEnviados: failure.section.form, error: failure.networkError },
         );
+        Sentry.captureException(failure.networkError, {
+          extra: { proyectoId: projectID, seccion: failure.section.key },
+        });
       } else {
         console.error(
           `[saveInfo] el backend rechazó "${failure.section.label}" (proyecto ${projectID}, status ${failure.status})`,
           { datosEnviados: failure.section.form, respuestaBackend: failure.body },
         );
+        Sentry.captureMessage(`[saveInfo] el backend rechazó "${failure.section.label}"`, {
+          level: "warning",
+          extra: {
+            proyectoId: projectID,
+            seccion: failure.section.key,
+            status: failure.status,
+            respuestaBackend: failure.body,
+          },
+        });
       }
     }
 

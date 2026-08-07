@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 import { getSessionUser } from "../getSessionUser";
 import isAdmin from "../isAdmin";
 
@@ -27,6 +29,7 @@ export async function insertAction(formData) {
     body: JSON.stringify(data),
   }).catch((error) => {
     console.error(`[insertAction/users] fetch falló a nivel de red`, error);
+    Sentry.captureException(error);
     return null;
   });
 

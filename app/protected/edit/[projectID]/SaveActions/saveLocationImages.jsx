@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 export async function saveLocationImages(files, projectId, projectSlug) {
   // Solo se loguea la cantidad de archivos, nunca su contenido.
   console.log(`[saveLocationImages] subiendo ${files.length} imagen(es) de ubicación para el proyecto ${projectId}`);
@@ -21,6 +23,10 @@ export async function saveLocationImages(files, projectId, projectSlug) {
 
     if (!res.ok) {
       console.warn(`[saveLocationImages] el backend no pudo subir las imágenes del proyecto ${projectId} (status ${res.status})`);
+      Sentry.captureMessage("[saveLocationImages] el backend rechazó las imágenes de ubicación", {
+        level: "warning",
+        extra: { proyectoId: projectId, status: res.status },
+      });
       return { ok: false, message: "No se pudieron subir las imágenes" };
     }
 
@@ -28,6 +34,7 @@ export async function saveLocationImages(files, projectId, projectSlug) {
     return { ok: true, message: "Imágenes subidas correctamente" };
   } catch (error) {
     console.error(`[saveLocationImages] excepción subiendo imágenes del proyecto ${projectId}`, error);
+    Sentry.captureException(error, { extra: { proyectoId: projectId } });
     return { ok: false, message: "No se pudieron subir las imágenes" };
   }
 }

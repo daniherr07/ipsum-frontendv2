@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -27,6 +29,7 @@ export async function loginAction(formData) {
     body: JSON.stringify({ email, password }),
   }).catch((error) => {
     console.error("[loginAction] fetch falló a nivel de red:", error);
+    Sentry.captureException(error);
     return null;
   });
 

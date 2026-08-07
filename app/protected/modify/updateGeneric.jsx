@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 import { getSessionUser } from "../getSessionUser";
 import isAdmin from "../isAdmin";
 
@@ -27,6 +29,7 @@ export async function updateGenerics(formData) {
     body: JSON.stringify(data),
   }).catch((error) => {
     console.error(`[updateGenerics] fetch falló a nivel de red (tabla "${data.table}")`, error);
+    Sentry.captureException(error);
     return null;
   });
 

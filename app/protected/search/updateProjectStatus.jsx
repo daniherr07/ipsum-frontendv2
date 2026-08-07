@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 export async function updateProjectStatus(proyectoId, activo) {
   const endpoint = process.env.BACKEND_URL + "/updateProjectStatus";
 
@@ -13,6 +15,7 @@ export async function updateProjectStatus(proyectoId, activo) {
     body: JSON.stringify({ proyecto_id: proyectoId, activo }),
   }).catch((error) => {
     console.error(`[updateProjectStatus] fetch falló a nivel de red (proyecto ${proyectoId})`, error);
+    Sentry.captureException(error);
     return null;
   });
 

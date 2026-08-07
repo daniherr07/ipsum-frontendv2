@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 import { redirect } from "next/navigation";
 
 export async function submitAction(formData) {
@@ -16,6 +18,7 @@ export async function submitAction(formData) {
     body: JSON.stringify({ email }),
   }).catch((error) => {
     console.error(`[submitAction/forgot] fetch falló a nivel de red para "${email}"`, error);
+    Sentry.captureException(error);
     return null;
   });
 

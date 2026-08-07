@@ -23,11 +23,13 @@ Sentry.init({
   // Define how likely Replay events are sampled when an error occurs.
   replaysOnErrorSampleRate: 1.0,
 
+  // Ver sentry.server.config.ts: mismo motivo (PII real de producción). El
+  // replayIntegration de arriba ya enmascara texto/bloquea medios por
+  // defecto, esto cubre además los cuerpos de fetch/XHR capturados como
+  // breadcrumbs.
   dataCollection: {
-    // To disable sending user data and HTTP bodies, uncomment the lines below. For more info visit:
-    // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#dataCollection
-    // userInfo: false,
-    // httpBodies: [],
+    userInfo: false,
+    httpBodies: [],
   },
 });
 

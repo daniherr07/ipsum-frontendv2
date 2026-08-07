@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 export async function sendNotification(
   proyectoId,
   remitenteUsuarioId,
@@ -24,6 +26,7 @@ export async function sendNotification(
     }),
   }).catch((error) => {
     console.error(`[sendNotification] fetch falló a nivel de red (proyecto ${proyectoId}, destinatario ${destinatarioUsuarioId})`, error);
+    Sentry.captureException(error);
     return null;
   });
 

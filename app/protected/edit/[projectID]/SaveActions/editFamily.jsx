@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 import { revalidatePath } from "next/cache";
 
 // Actualiza un miembro de familia existente (identificado por member.db_id)
@@ -21,11 +23,16 @@ export async function updateFamily(member, projectSlug) {
     body: JSON.stringify(member),
   }).catch((error) => {
     console.error(`[updateFamily] fetch falló a nivel de red (miembro db_id ${member.db_id}, proyecto ${member.proyecto_id})`, error);
+    Sentry.captureException(error);
     return null;
   });
 
   if (!res || !res.ok) {
     console.warn(`[updateFamily] el backend no pudo actualizar el familiar db_id ${member.db_id} (status ${res?.status})`);
+    Sentry.captureMessage("[updateFamily] el backend rechazó la actualización del familiar", {
+      level: "warning",
+      extra: { proyecto_id: member.proyecto_id, db_id: member.db_id, status: res?.status },
+    });
     return { ok: false, message: "No se pudo actualizar el familiar" };
   }
 
@@ -47,6 +54,10 @@ export async function updateFamily(member, projectSlug) {
 
       if (!fileRes.ok) {
         console.warn(`[updateFamily] el backend no pudo subir la foto de cédula del miembro ${member.id} (status ${fileRes.status})`);
+        Sentry.captureMessage("[updateFamily] el backend rechazó la foto de cédula", {
+          level: "warning",
+          extra: { proyecto_id: member.proyecto_id, status: fileRes.status },
+        });
         return {
           ok: false,
           message: "El familiar se actualizó, pero no se pudo subir la imagen de cédula",
@@ -54,6 +65,7 @@ export async function updateFamily(member, projectSlug) {
       }
     } catch (error) {
       console.error(`[updateFamily] excepción subiendo foto de cédula del miembro ${member.id}`, error);
+      Sentry.captureException(error, { extra: { proyecto_id: member.proyecto_id } });
       return {
         ok: false,
         message: "El familiar se actualizó, pero no se pudo subir la imagen de cédula",

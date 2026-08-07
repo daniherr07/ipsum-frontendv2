@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 export async function addBitacora(formData) {
   const endpoint = process.env.BACKEND_URL + "/addBitacora";
 
@@ -16,6 +18,7 @@ export async function addBitacora(formData) {
     body: JSON.stringify(data),
   }).catch((error) => {
     console.error(`[addBitacora] fetch falló a nivel de red (proyecto ${data.proyecto_id})`, error);
+    Sentry.captureException(error);
     return null;
   });
 

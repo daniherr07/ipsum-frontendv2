@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 // Misma ruta backend que usa el cambio de contraseña forzado del primer
 // login (app/login/changePassword), pero para un usuario que ya tiene sesión
 // iniciada: no hay redirect ni se toca la cookie, solo se devuelve el
@@ -15,6 +17,7 @@ export async function changeOwnPasswordAction(id, currentPassword, newPassword) 
     body: JSON.stringify({ id, currentPassword, newPassword }),
   }).catch((error) => {
     console.error(`[changeOwnPasswordAction] fetch falló a nivel de red (usuario ${id})`, error);
+    Sentry.captureException(error);
     return null;
   });
 

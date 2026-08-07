@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 export async function saveImages(files, projectId, projectSlug) {
   const data = new FormData();
   const endpointFile = process.env.BACKEND_URL + "/addProjectPhoto";
@@ -19,6 +21,7 @@ export async function saveImages(files, projectId, projectSlug) {
     body: data,
   }).catch((error) => {
     console.error(`[saveImages] fetch falló a nivel de red (proyecto ${projectId})`, error);
+    Sentry.captureException(error);
     return null;
   });
 

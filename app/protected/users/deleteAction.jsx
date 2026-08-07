@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 import { getSessionUser } from "../getSessionUser";
 import isAdmin from "../isAdmin";
 
@@ -22,6 +24,7 @@ export async function deleteAction(id) {
     body: JSON.stringify({ id }),
   }).catch((error) => {
     console.error(`[deleteAction/users] fetch falló a nivel de red (usuario ${id})`, error);
+    Sentry.captureException(error);
     return null;
   });
 

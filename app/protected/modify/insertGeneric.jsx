@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 // Server action para el formulario "Añadir" de las tablas genéricas
 // (entidades, analistas, constructores, etc.). El campo "table" viaja en el
 // propio formData e indica en qué tabla insertar el registro nuevo.
@@ -18,6 +20,7 @@ export async function insertGenerics(formData) {
     body: JSON.stringify(data),
   }).catch((error) => {
     console.error(`[insertGenerics] fetch falló a nivel de red (tabla "${data.table}")`, error);
+    Sentry.captureException(error);
     return null;
   });
 

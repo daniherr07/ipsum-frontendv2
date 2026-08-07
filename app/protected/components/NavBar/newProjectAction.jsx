@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 import { redirect } from "next/navigation";
 
 export async function newProjectAction(formData, creatorUserId) {
@@ -17,6 +19,7 @@ export async function newProjectAction(formData, creatorUserId) {
     body: JSON.stringify({ projectName: projectName, creatorUserId }),
   }).catch((error) => {
     console.error(`[newProjectAction] fetch falló a nivel de red creando "${projectName}"`, error);
+    Sentry.captureException(error);
     return null;
   });
 
